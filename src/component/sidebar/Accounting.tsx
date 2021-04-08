@@ -168,7 +168,6 @@ class Accounting extends React.Component<{},Props> {
             try {
               const api = `/api/customer/invoice/payment/${loc_no}/`;
               let response = await axiosInstance.get(api, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
-              
               if(!(this.state.allInvoice === null))
               {
                   this.setState({loading : false});
@@ -320,13 +319,35 @@ class Accounting extends React.Component<{},Props> {
            load = () =>{
              this.setState({loading:false});
            }
-        
+           
+           cancel(id:any) {
+            const updatedData = this.state.tableData.map((obj:any,i:number)=>{
+                if(i===id){
+                  obj.showDetails = false;
+                }
+                return {...obj}
+            })
+            this.setState({tableData: updatedData});
+           }
+
            renderEditForm=(show:any,id:any)=>{
             if(show){
               return(
                 <>
                 <tr style={{height:"0px"}}>
                     <td colSpan={6}>
+                        <div className="accordian"> 
+                          <div className="col-12">
+                              <div className="row">
+                                  <div className="col-6">
+                                      <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Invoice Details</p>
+                                  </div>
+                                  <div className="col-6">
+                                    <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
                         <AccountingDetails load={this.load} loadt={this.loadt} locationNo={this.state.loc_no} cus_no={this.state.cus_no}/>
                      </td>
                 </tr>
@@ -618,7 +639,7 @@ class Accounting extends React.Component<{},Props> {
                                     <div className="flex-item-inner">
                                               <div className="card-front p-2 m-2 bg-violet">
                                                   <h6>Account Balance</h6>
-                                                  <p className="detail">${this.state.total_amount}</p>
+                                                  <p className="detail">${parseFloat(this.state.total_amount).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
                                               </div>
                                             
                                       </div>
@@ -627,7 +648,7 @@ class Accounting extends React.Component<{},Props> {
                                     <div className="flex-item-inner">
                                               <div className="card-front p-2 m-2 bg-magenta">
                                                   <h6>30 Days</h6>
-                                                  <p className="detail">${this.state.over_30}</p>
+                                                  <p className="detail">${parseFloat(this.state.over_30).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
                                               </div>
                                             
                                       </div>
@@ -636,7 +657,7 @@ class Accounting extends React.Component<{},Props> {
                                     <div className="flex-item-inner">
                                               <div className="card-front p-2 m-2 bg-blue">
                                                   <h6>60 Days</h6>
-                                                  <p className="detail">${this.state.over_60}</p>
+                                                  <p className="detail">${parseFloat(this.state.over_60).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
                                               </div>
                                             
                                       </div>
@@ -645,7 +666,7 @@ class Accounting extends React.Component<{},Props> {
                                     <div className="flex-item-inner">
                                               <div className="card-front p-2 m-2 bg-green">
                                                   <h6>90 Days</h6>
-                                                  <p className="detail">${this.state.over_90}</p>
+                                                  <p className="detail">${parseFloat(this.state.over_90).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
                                               </div>
                                       </div>
                                   </div>
@@ -697,7 +718,7 @@ class Accounting extends React.Component<{},Props> {
                         <tr key={i} >
                         <td colSpan={2}>{item.location}</td>
                         <td colSpan={2}>{item.address}</td>
-                         <td>$ {item.amount}</td>
+                         <td>$ {parseFloat(item.amount).toLocaleString()}</td>
                         <td style={{textAlign:"right"}}>
                            <img data-toggle="tooltip" data-placement="top" title="view invoices" alt="eye" className=" ml-1 icon"  onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.details(item.loc_no,i)} src={viewa} />
                            <img data-toggle="tooltip" data-placement="top" title="pay invoices" alt="dollar" className=" ml-1 icon"  src={dollar} onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.invoiceModal(item.loc_no,item.location,item.address)}/>

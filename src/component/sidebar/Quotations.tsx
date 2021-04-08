@@ -40,7 +40,7 @@ class Quotations extends React.Component<{},Props> {
         this.toast = React.createRef();
         this.state={
           data: [],
-          isSelected:"",
+          isSelected:"pending",
           last_name:"",
           cus_no:"",
           loading : false,
@@ -176,7 +176,7 @@ class Quotations extends React.Component<{},Props> {
                           <div className="col-12">
                               <div className="row">
                                   <div className="col-6">
-                                      <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Quotes Details</p>
+                                      <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Estimation Details</p>
                                   </div>
                                   <div className="col-6">
                                     <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
@@ -226,7 +226,7 @@ class Quotations extends React.Component<{},Props> {
                         <div style={{marginLeft:"12.5rem",marginTop:"1.25rem"}} className="col-3">
                             <label  htmlFor="inputState">Filter By:</label>
                             <Select
-                                values={this.state.isSelected}
+                                values={this.options.filter(obj => obj.value === this.state.isSelected)}
                                 onChange={this.handleChange}
                                 className="dropdown"
                                 options={this.options}
@@ -242,7 +242,7 @@ class Quotations extends React.Component<{},Props> {
                     <div className="col-12">
                         <div className="row">
                             <div className="col-6">
-                                <p style={{color:"#fff",textAlign:"left",marginTop:"0.625rem"}}>Quotations</p>
+                                <p style={{color:"#fff",textAlign:"left",marginTop:"0.625rem"}}>Estimations</p>
                             </div>
                         </div>
                     </div>
@@ -252,7 +252,7 @@ class Quotations extends React.Component<{},Props> {
                         <tr >
                         <th style={{fontWeight:500}} scope="col">Location Name</th>
                         <th style={{fontWeight:500}} scope="col">Address</th>
-                        <th style={{fontWeight:500,textAlign:"center"}} scope="col">Open Quotes</th>
+                        <th style={{fontWeight:500,textAlign:"center"}} scope="col">{this.options.filter(obj => obj.value === this.state.isSelected)[0].label} Quotes</th>
                         <th style={{fontWeight:500,textAlign:"right"}} scope="col">Actions</th>
                         </tr>
                     </thead>

@@ -54,8 +54,8 @@ let Sidebarr =()=> {
               </li>
               <li className="nav-item text-start w-100">
                 { (localStorage.getItem('invoice')=== 'false' || localStorage.getItem('quotes')=== 'false')  ? <span className="sidetext p-1 pl-4  nav-link" style={{cursor:'not-allowed'}} ><img className='sideicons' alt="sidebar" src={quotation}/>
-                    <span className='linktext ml-2'>Quotations</span></span> : <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/quotations" ><img className='sideicons' alt="sidebar" src={quotation}/>
-                    <span className='linktext ml-2'>Quotations</span></NavLink>}
+                    <span className='linktext ml-2'>Estimations</span></span> : <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/estimations" ><img className='sideicons' alt="sidebar" src={quotation}/>
+                    <span className='linktext ml-2'>Estimations</span></NavLink>}
               </li>
               <li className="nav-item text-start w-100">
                 <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/servicerequest"><img className='sideicons' alt="sidebar" src={service}/>
@@ -67,7 +67,7 @@ let Sidebarr =()=> {
                     <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/viewkeys"><img className='sideicons' alt="sidebar" src={keys}/>
                       <span className='linktext ml-2'>Manage Keys</span>
                     </NavLink>
-                    <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/viewkeysgroup"><img className='sideicons' alt="sidebar" src={keys}/>
+                    <NavLink className="sidetext p-1 pl-4  nav-link ml-2" to="/home/viewkeysgroup"><img className='sideicons' alt="sidebar" src={keys}/>
                       <span className='linktext ml-2'>Manage Keys Group</span>
                     </NavLink>
                   </> : <span className="sidetext p-1 pl-4  nav-link" style={{cursor:'not-allowed'}}><img className='sideicons' alt="sidebar" src={keys}/>

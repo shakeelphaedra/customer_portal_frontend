@@ -16,7 +16,7 @@ import ResetPassword from './component/login/ResetPassword';
 import Header from './component/header/Header';
 import NotFound from './component/NotFound';
 import { useEffect } from 'react';
-
+require('dotenv').config()
 function App(props:any) {
   const history = useHistory();
 

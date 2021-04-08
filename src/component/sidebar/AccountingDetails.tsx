@@ -177,7 +177,7 @@ class AccountingDetails extends React.Component<{locationNo:any,cus_no:any,load:
               </p>
             </div>
           </div>
-          <table className="table" style={{backgroundColor:"#fff"}}>
+          <table className="table table-striped" style={{backgroundColor:"#fff"}}>
             <thead style={{ color: "#fff",backgroundColor:"#0D93C9" }}>
               <tr>
                 <th data-visible="true" >Description</th>
@@ -252,7 +252,7 @@ class AccountingDetails extends React.Component<{locationNo:any,cus_no:any,load:
          
           <div>
           <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-          <table className="table table-bordered" >
+          <table className="table table-striped" style={{border :'2px solid #12739A'}}>
             <thead>
               <tr>
                 <th style={{fontWeight:500}} scope="col">Invoice Number</th>
@@ -273,9 +273,9 @@ class AccountingDetails extends React.Component<{locationNo:any,cus_no:any,load:
                 <td>{item.invoice}</td>
                 <td>{date}</td>
                 <td>{do_date}</td>
-                <td>$ {item.sub_total}</td>
-                <td>$ {item.tax}</td>
-                <td>$ {item.total}</td>
+                <td>$ {parseFloat(item.sub_total).toLocaleString()}</td>
+                <td>$ {parseFloat(item.tax).toLocaleString()}</td>
+                <td>$ {parseFloat(item.total).toLocaleString()}</td>
                 <td style={{textAlign:"right"}}>
                     <img data-toggle="tooltip" data-placement="top" title="view invoice" alt="eye" className="ml-1 icon" onClick={()=>this.invoice(item.invoice)} src={viewa}/>
                     {<a data-toggle="tooltip" data-placement="top" title="invoice" href={`${baseURL}/api/customer/pdf/invoice/${this.props.cus_no}/${this.props.locationNo}/${item.invoice}/`} ><img alt="pdf1" className="ml-1 icon" src={image}/></a>}

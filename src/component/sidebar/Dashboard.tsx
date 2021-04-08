@@ -35,7 +35,7 @@ const Dash = () => {
                                     <Route path='/home/companydetails' component={CompanyDetails} />
                                     <Route path='/home/userinformation' component={UserInformation} />
                                     <Route path='/home/accounting' component={Accounting} />
-                                    <Route path='/home/quotations' component={Quotations} />
+                                    <Route path='/home/estimations' component={Quotations} />
                                     <Route path='/home/servicerequest' component={ServiceRequest} />
                                     <Route path='/home/viewkeys' component={ViewKeys} />
                                     <Route path='/home/viewkeysgroup' component={ViewKeysGroup} />

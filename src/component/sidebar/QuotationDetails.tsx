@@ -7,6 +7,10 @@ import FadeLoader from "react-spinners/FadeLoader";
 import { css } from "@emotion/core";
 import Payment from './Payement/Payment';
 import cancel from '../icons/cancel.svg';
+import  jsPDF from "jspdf";
+import 'jspdf-autotable';
+import { autoTable } from 'jspdf-autotable';
+import image from '../icons/pdf-1.svg';
 
 const override = css`
   margin: 0 auto;
@@ -109,6 +113,7 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
       return (
         <>
         <div style={{textAlign:'right'}}>
+
                   <img alt="cancel" style={{width:'1.875rem',cursor:'pointer'}} onClick={this.closeModal} src={cancel}/>
           </div>
         <Payment quote={this.state.quoteNumber} amount={this.state.quoteAmount} />
@@ -126,6 +131,8 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
     return(
         <div>
           <div style={{textAlign:'right'}}>
+                <a href="javascript:void(0)" onClick={this.exportPDFsingleinvoices}><img alt="pdf1" style={{marginRight:'1rem',cursor:"pointer",width:'1.563rem',height:'1.563rem'}} src={image}/></a>
+
                   <img alt="cancel" style={{width:'1.875rem',cursor:'pointer'}} onClick={this.closeModal} src={cancel}/>
                </div>
           <div className='row'>
@@ -206,6 +213,65 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
  componentDidMount= async()=>{
    this.fetchedData();
  }
+  
+ exportPDFsingleinvoices = async() => {
+  this.setState({loading:true});
+    try {
+      this.setState({loading : false});
+      const unit = "pt";
+      const size = "A4"; // Use A1, A2, A3 or A4
+      const orientation = "portrait"; // portrait or landscape
+      const marginLeft = 40;
+      const doc: any = new jsPDF(orientation, unit, size);
+      doc.setTextColor(92,92,92)
+      doc.setFontSize(15);
+      doc.text(40, 20, 'Billed To');
+      doc.setTextColor(0,0,0)
+      doc.text(40, 40, this.state.invoicePop.name)
+      doc.setTextColor(92,92,92)
+      doc.text(40, 60, this.state.invoicePop.address)
+      doc.setTextColor(0,0,0)
+      doc.text(40, 100,"Customer# : " +this.state.invoicePop.cus_no)
+      doc.text("Quote", 550, 20, "right");
+      doc.text("#"+this.state.invoicePop.quote, 550, 40, "right");
+      const quote_date  = this.state.invoicePop.quote_date? new Date(this.state.invoicePop.quote_date).toLocaleDateString(): '';
+      doc.setFontSize(10);
+      doc.text(quote_date, 550, 60, "right");
+      const headers = [["Description", "QTY", "Invoice", "Each", "Amount"]];
+      const data = this.state.invoiceTable.map((item:any)=> {
+        let date: any = new Date(item.quote_date).toLocaleDateString("fr-CA")
+        return [item.desc, item.quantity, item.invoice,item.price, item.amount]
+      });
+
+      let content = {
+        startY: 120,
+        head: headers,
+        body: data
+      };
+      // doc.text(`${location}`, marginLeft, 40);
+      // doc.text(`${address}`, marginLeft, 80);
+      (doc as jsPDF & { autoTable: autoTable }).autoTable (content);
+      let finalY = doc.lastAutoTable.finalY; // The y position on the page
+      doc.setTextColor(92,92,92)
+
+      doc.text(550, finalY + 50, "Sub Total : $"+this.state.invoicePop.amount, "right")
+      doc.text(550, finalY + 50+15, "GST(2235785) : $"+this.state.invoicePop.tax, "right")
+      doc.text(550, finalY + 50+30, "Total : $"+this.state.invoicePop.invoice_total, "right")
+      doc.setTextColor(0,0,0)
+      
+      doc.text(550, finalY + 50+45, "Amount owning : $"+this.state.invoicePop.invoice_total, "right")
+      doc.addImage(logopay, 'JPEG', 20, finalY + 130);
+      doc.setTextColor(92,92,92)
+      doc.text(30, finalY + 185, "www.calgarylockandsafe.com")
+
+      doc.save("Quotes.pdf"); 
+      }catch(error){
+          this.setState({loading : false});
+          throw error;
+      }
+      
+      
+    };
 
     render() {
       return (
@@ -218,10 +284,10 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
             }
           <div>
           <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-          <table className="table table-striped" style={{border :'2px solid #12739A'}}>
+          <table className="table table-striped" >
             <thead>
               <tr>
-                <th style={{fontWeight:500}} scope="col">S.No.</th>
+                {/* <th style={{fontWeight:500}} scope="col">S.No.</th> */}
                 <th style={{fontWeight:500}} scope="col">Quote Number</th>
                 <th style={{fontWeight:500}} scope="col">Quote Date</th>
                 <th style={{fontWeight:500}} scope="col">Sales Person</th>
@@ -234,7 +300,7 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
               let date = new Date(item.quote_date).toLocaleDateString("fr-CA")
                 return(
               <tr key={i} >
-                <td scope="row">{i+1}</td>
+                {/* <td scope="row">{i+1}</td> */}
                 <td>{item.quote}</td>
                 <td>{date}</td>
                 <td>{item.sales_person}</td>

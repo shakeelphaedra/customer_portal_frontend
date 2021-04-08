@@ -282,7 +282,7 @@ const handleCheckboxSlider = (e: { target: { name: any; checked:any;} },item:any
                         <div className="col-4">
                             <input style={{height:"1.375rem",width:"1.375rem",cursor:'pointer'}} name="quotes"   className="form-check-input" type="checkbox" checked={formData.quotes}  onChange={handleCheckboxChange} id="flexCheckDefault2" disabled={!current_user_access.quotes}/>
                             <label style={{paddingLeft:"1.1em"}} className="form-check-label" >
-                            Accept Quotes
+                            Accept Estimations
                             </label>
                         </div>
                         <div className="col-4">
@@ -377,7 +377,7 @@ const permission = () =>{
                       <th>Manage Keys</th>
                       <th>Request Service</th>
                       <th>Pay Bills</th>
-                      <th>Accept Quotes</th>
+                      <th>Accept Estimations</th>
                       <th>Key Authorizers</th>
                       <th>Users</th>
                       <th>Audit Trails</th>

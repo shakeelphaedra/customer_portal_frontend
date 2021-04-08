@@ -1,7 +1,7 @@
 import axios from 'axios';
 import env from 'react-dotenv';
 
-export const baseURL = env.API_URL;
+export const baseURL = process.env.REACT_APP_API_URL;
 
 
   const axiosInstance = axios.create({

@@ -284,7 +284,7 @@ let AddNewUser = (props:any) =>{
                         <div className="col-4">
                             <input style={{height:"1.375rem",width:"1.375rem",cursor:'pointer'}}  name="quotes"  className="form-check-input" type="checkbox"  checked={formData.quotes} id="flexCheckDefault3" onChange={handleCheckboxChange} disabled={!props.permissions.quotes}/>
                             <label style={{paddingLeft:"1.1em",marginTop:"0.25rem"}} className="form-check-label" >
-                                Accept Quotes
+                                Accept Estimations
                             </label>
                         </div>
                         <div className="col-4">
