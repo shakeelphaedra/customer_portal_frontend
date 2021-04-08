@@ -9,7 +9,6 @@ import { css } from "@emotion/core";
 import ReactTooltip from 'react-tooltip';
 import info from '../icons/info.svg';
 import ReCAPTCHA from "react-google-recaptcha";
-import env from "react-dotenv";
 
 const validEmailRegex = RegExp(
     /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i
@@ -219,7 +218,7 @@ let Login=()=> {
                 <ReCAPTCHA
                     onChange={handleVerifyRecaptch}
                     ref={recaptchaRef}
-                    sitekey={env.RECAPTCHA_SITE_KEY}
+                    sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || ""}
                     onExpired={()=>{handleExpireRecaptcha()}}
                 />
                 <div>
