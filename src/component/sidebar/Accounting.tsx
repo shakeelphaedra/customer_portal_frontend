@@ -12,6 +12,8 @@ import { Toast } from 'primereact/toast';
 import { Paginator } from 'primereact/paginator';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+
+import fileDownload from 'js-file-download'
 import Payment from './Payement/Payment';
 import  jsPDF from "jspdf";
 import 'jspdf-autotable';
@@ -612,7 +614,11 @@ class Accounting extends React.Component<{},Props> {
             this.setState({ allInvoiceModalIsOpen:true,});
             
           }
-        
+    handleDownload = (api: string, name: string) => {
+      axiosInstance.get(api,{ headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`}, responseType: 'blob' }).then((res: any) => {
+        fileDownload(res.data,name )
+      })
+    }    
     render(){
         return(
             <>
@@ -695,7 +701,7 @@ class Accounting extends React.Component<{},Props> {
                                 <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Invoices</p>
                             </div>
                             <div className='col-6'>
-                                <a href={`${baseURL}/api/customer/pdf/all/invoice/${this.state.cus_no}/`}><img data-toggle="tooltip" data-placement="top" title="all invoices" alt="pdf1" style={{cursor:"pointer",backgroundColor:'white',float:"right",width:'2rem',marginTop:'.25rem'}} src={image}/></a>
+                                <a href="javascript:void(0)" onClick={() => this.handleDownload(`${baseURL}/api/customer/pdf/all/invoice/${this.state.cus_no}/`,"AllInvoices.pdf")}><img data-toggle="tooltip" data-placement="top" title="all invoices" alt="pdf1" style={{cursor:"pointer",backgroundColor:'white',float:"right",width:'2rem',marginTop:'.25rem'}} src={image}/></a>
                             </div>
                         </div>
                     </div>
