@@ -7,6 +7,8 @@ import { css } from "@emotion/core";
 import Modal from 'react-modal';
 import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
+import viewa from '../icons/viewa.svg';
+import ServiceRequestDetails from './ServiceRequestDetails';
 
 const override = css`
   margin: 0 auto;
@@ -19,6 +21,7 @@ interface Props{
     data:any;
     last_name: any;
     cus_no:any;
+    loc_no: any;
     loading : boolean;
     modalIsOpen:any;
     address :any;
@@ -40,6 +43,7 @@ class ServiceRequest extends React.Component<{},Props> {
         this.toast = React.createRef();
         this.state={
             data:[],
+            loc_no: '',
             last_name : '',
             cus_no :'',
             loading : false,
@@ -67,7 +71,25 @@ class ServiceRequest extends React.Component<{},Props> {
           height                : '29rem'
         }
       };
-    
+
+    details=(loc_no:any,id:any)=> {
+        const updatedData = this.state.tableData.map((obj:any,i:number)=>{
+            if(i===id){
+            if(obj.showDetails=== false){
+                this.setState({loading:true});
+            }
+            }
+            if(i===id){
+                obj.showDetails = true;
+            }else{
+                obj.showDetails = false;
+            }
+            return {...obj}
+            });
+            this.setState({tableData :updatedData});
+        //this.setState({edit:true});
+        this.setState({loc_no:loc_no});
+    };
 
     fetchedData= async()=>{
         try {
@@ -201,6 +223,50 @@ class ServiceRequest extends React.Component<{},Props> {
       let slice = this.state.data.slice(offset, offset + perPage);
       this.setState({tableData:slice});
   }
+  cancel(id:any) {
+    const updatedData = this.state.tableData.map((obj:any,i:number)=>{
+        if(obj.loc_no===id){
+          obj.showDetails = false;
+        }
+        return {...obj}
+    })
+    this.setState({tableData: updatedData});
+   }
+
+   load = () =>{
+    this.setState({loading:false});
+  }
+  loadt = () =>{
+    this.setState({loading:true});
+  }
+
+  renderEditForm=(show:any,id:any)=>{
+    if(show){
+      return(
+        <>
+        <>
+            <tr style={{height:"0px"}}>
+                <td colSpan={5}>
+                    <div className="accordian"> 
+                        <div className="col-12">
+                            <div className="row">
+                                <div className="col-6">
+                                    <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Dispatches Details</p>
+                                </div>
+                                <div className="col-6">
+                                <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ServiceRequestDetails load={this.load} loadt={this.loadt} locationNo={this.state.loc_no} />
+                    </td>
+            </tr>
+            </>
+       </>
+      )
+    }
+  }
 
     render(){
         return(
@@ -235,15 +301,19 @@ class ServiceRequest extends React.Component<{},Props> {
                     </thead>
                     <tbody>
                     {this.state.tableData.map((item: any,i: any)=>{
+                        console.log(item)
                          return(
                              <>
                         <tr key={i}>
                         <td>{item.location}</td>
                         <td>{item.address}</td>
                         <td style={{textAlign:"right",cursor:"pointer"}}>
+                          <img data-toggle="tooltip" data-placement="top" title="View Quotes" alt="eye" style={{cursor:"pointer",width:'1.8rem', marginRight: '1rem'}} src={viewa} onClick={()=>this.details(item.loc_no,i)}/>
                            <img data-toggle="tooltip" data-placement="top" title="Request" alt="truck" style={{width:'2rem'}} onClick={(localStorage.getItem('service_request')=== 'true')? ()=>this.invoice(item.location ,item.address) : this.noPermission} src={truck}/>
                         </td>
                         </tr>
+                        {this.renderEditForm(item.showDetails, item.loc_no)}
+
                         </>
                         )})}
                         <tr>

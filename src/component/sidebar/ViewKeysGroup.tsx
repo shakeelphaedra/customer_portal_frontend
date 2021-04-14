@@ -315,7 +315,7 @@ class ViewKeysGroup extends React.Component<{},Props> {
                   cacheOptions
                   defaultOptions
                   placeholder={'Please select keys'}
-
+                  isSearchable={false}
                   value={values.keys}
                   getOptionLabel={e => e.label}
                   getOptionValue={e => e.value}
