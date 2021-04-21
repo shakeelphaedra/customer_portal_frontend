@@ -70,8 +70,13 @@ let Sidebarr =()=> {
                     <NavLink className="sidetext p-1 pl-4  nav-link ml-2" to="/home/viewkeysgroup"><img className='sideicons' alt="sidebar" src={keys}/>
                       <span className='linktext ml-2'>Manage Keys Group</span>
                     </NavLink>
+                    <NavLink className="sidetext p-1 pl-4  nav-link ml-4" to="/home/auditkeys">
+                      <span className='linktext ml-2'>Audit Keys</span><span className="text-danger text-bold ml-2">NEW</span>
+                    </NavLink>
                   </> : <span className="sidetext p-1 pl-4  nav-link" style={{cursor:'not-allowed'}}><img className='sideicons' alt="sidebar" src={keys}/>
-                    <span className='linktext ml-2'>Manage Keys</span></span>}
+                    <span className='linktext ml-2'>Manage Keys</span>
+                    <span className='linktext ml-2'>Audit Keys</span>
+                    </span>}
               </li>
               <li className="nav-item text-start w-100">
                 { localStorage.getItem('audit')=== 'true'? <NavLink className="sidetext p-1 pl-4  nav-link" to="/home/auditreport"><img className='sideicons' alt="sidebar" src={audit}/>

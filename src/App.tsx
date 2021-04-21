@@ -16,6 +16,8 @@ import ResetPassword from './component/login/ResetPassword';
 import Header from './component/header/Header';
 import NotFound from './component/NotFound';
 import { useEffect } from 'react';
+import KeyAuditConfirmation from './component/KeyAuditConfirmation/KeyAuditConfirmation';
+
 require('dotenv').config()
 function App(props:any) {
   const history = useHistory();
@@ -51,6 +53,7 @@ function App(props:any) {
           </div>
       </div>
           <Route exact path="/" component={Login} />
+          <Route exact path="/KeyAudit/:id" component={KeyAuditConfirmation} />
           <Route path="/home" component={Home} />
           {localStorage.getItem("access_token")?<Header />: history.push('/')}
           <Route path="/createaccount" component={CreateAccount} />

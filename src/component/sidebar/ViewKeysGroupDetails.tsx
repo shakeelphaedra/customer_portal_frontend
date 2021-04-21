@@ -26,7 +26,7 @@ interface Props{
 }
 
 
-class ViewKeysGroupDetails extends React.Component<{viewdata:any,load:any,loadc:any},Props> {
+class ViewKeysGroupDetails extends React.Component<{viewdata:any,load:any,loadc:any, group_id: any, fetchedData: any},Props> {
   toast: React.RefObject<any>;
 
   constructor(props:any){
@@ -56,8 +56,10 @@ class ViewKeysGroupDetails extends React.Component<{viewdata:any,load:any,loadc:
   };
   removeItem = async (item: any) =>{
     const api = `/api/kdfinder/keysgroups/remove_item`;
-      let response = await axiosInstance.post(api , {id: item.id},{headers: {'Content-Type': 'application/json'} } );
+      let response = await axiosInstance.post(api , {id: item.id, group_id: this.props.group_id},{headers: {'Content-Type': 'application/json'} } );
       if(response.data.success){
+        if(response.data.delete)
+        this.props.fetchedData(null, null)
         var index = this.state.data.indexOf(item);
         if (index > -1) {
             this.state.data.splice(index, 1)
@@ -83,27 +85,15 @@ class ViewKeysGroupDetails extends React.Component<{viewdata:any,load:any,loadc:
             <thead >
               <tr>
                 <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Key ID Stamp</th>
-                <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Tenant</th>
-                <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">First/Last Name</th>
-                <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Phone </th>
-                <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Email ID </th>
-                <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Issue Date</th>
-                <th style={{fontWeight:500,textAlign:'center',margin:0,width:"6.65rem"}} scope="col">Actions</th>
               </tr>
             </thead>
             <tbody >
             {this.state.data.map((item: any,i: any)=>{
              return(
               <tr key={i}>
-                <th style={{margin:0,width:"6.65rem"}} scope="row">{item.key_id +" - "+ item.sequence}</th>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="tenant_location" value={this.state.tenant_location} onChange={this.handleInputChange}  /> : item.tenant_location}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="key_holder" value={this.state.key_holder} onChange={this.handleInputChange}   /> : item.key_holder}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="phone" value={this.state.phone} onChange={this.handleInputChange}   /> : item.phone}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="email" value={this.state.email} onChange={this.handleInputChange}  /> : item.email}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <Calendar style={{height:'2rem',width:"7.65rem",padding:0,margin:0}} id="date_issued" placeholder="YYYY-MM-DD" value={this.state.date_issued} onChange={(e:any) => this.setState({date_issued:e.value.toLocaleDateString("fr-CA")})}/> : item.date_issued}</td>
-                <td style={{margin:0,textAlign:"center",width:'6rem'}}>
-                   <img alt="viewkeys" style={{marginLeft:"0.7rem",width:'0.8rem'}} src={deleteIcon} onClick={() => this.removeItem(item)}/>
-                </td>
+                <th style={{margin:0,width:"6.65rem"}} scope="row">{item.key_id +" - "+ item.sequence}
+                <img alt="viewkeys" style={{marginLeft:"0.7rem",width:'1.3rem'}} src={deleteIcon} onClick={() => this.removeItem(item)}/>
+                </th>
               </tr>
               )})}
             </tbody>

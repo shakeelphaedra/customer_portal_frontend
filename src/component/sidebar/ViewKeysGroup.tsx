@@ -21,7 +21,6 @@ import { Formik, validateYupSchema } from 'formik';
 import { Calendar } from 'primereact/calendar';
 import edit1 from '../icons/edit.svg';
 
-import AsyncSelect from 'react-select/async';
 
 const customStyles = {
   content : {
@@ -31,7 +30,6 @@ const customStyles = {
     bottom                : 'auto',
     marginRight           : '-20%',
     transform             : 'translate(-50%, -50%)',
-    height: '30rem',
     overflow: 'inherit !important'
   }
 };
@@ -55,6 +53,7 @@ interface Props{
   limit:any;
   offset:any;
   totalRecords:any;
+  keysInGroup: any;
   loading : boolean;
   modalIsOpen : boolean;
   door_compromised:any;
@@ -78,6 +77,7 @@ class ViewKeysGroup extends React.Component<{},Props> {
       showDetails: false,
       edit:false,
       data:[],
+      keysInGroup: [],
       view:[],
       csvTable:[],
       currentuser:[],
@@ -107,7 +107,6 @@ class ViewKeysGroup extends React.Component<{},Props> {
       bottom                : 'auto',
       marginRight           : '-20%',
       transform             : 'translate(-50%, -50%)',
-      height: '30rem',
       overflow: 'inherit !important',
     }
   };
@@ -121,6 +120,7 @@ class ViewKeysGroup extends React.Component<{},Props> {
       return({...obj, showDetails: false
       })
     })});
+    this.loadOptions()
     if(!(this.state.data.length === 0))
     {
         this.setState({loading : false});
@@ -133,12 +133,36 @@ class ViewKeysGroup extends React.Component<{},Props> {
     return this.state.data;
   }
 
+  removeKeyFromKeysInGroup = (e:any,key: any) => {
+    e.preventDefault()
+    if(key){
+      var keysInGroup = this.state.keysInGroup;
+      var keys = this.state.keys
+      this.setState({keysInGroup: keysInGroup.filter((obj: any) => obj.value !== key.value)});
+      keys.push(key);
+      this.setState({keys: keys});
+    }
+  }
+
+  addKeysToGroup = (e:any,key: any, cb:any) => {
+    e.preventDefault()
+    if(key){
+      var keysInGroup = this.state.keysInGroup;
+      var keys = this.state.keys
+      this.setState({keys: keys.filter((obj: any) => obj.value !== key.value)});
+      keysInGroup.push(key);
+      this.setState({keysInGroup: keysInGroup});
+      cb()
+      this.setState({isSelected: null})
+    }
+  }
+
   renderEditForm=(show:any,id:any)=>{
     if(show){
       return(
         <>
           <tr style={{height:"0px"}}>
-              <td colSpan={4}>
+              <td colSpan={7}>
               <div className="accordian"> 
                     <div className="col-12">
                         <div className="row">
@@ -150,7 +174,7 @@ class ViewKeysGroup extends React.Component<{},Props> {
                         </div>
                     </div>
                 </div>
-                <ViewKeysGroupDetails loadc={this.loadc} load={this.load} viewdata={this.state.view}/>
+                <ViewKeysGroupDetails group_id={id} fetchedData={this.fetchedData} loadc={this.loadc} load={this.load} viewdata={this.state.view}/>
               </td>
           </tr>
        </>
@@ -229,7 +253,7 @@ class ViewKeysGroup extends React.Component<{},Props> {
     if(id){
       api = api + "group/" + id
     }
-    values.keys  = values.keys.map((obj:any)=> obj.value)
+    values.keys  = this.state.keysInGroup.map((obj:any)=> obj.value)
     let response = await axiosInstance.post(api ,values, { headers: {'Content-Type': 'application/json'} } );
     if(response.data.success){
       this.changeModal()
@@ -238,14 +262,13 @@ class ViewKeysGroup extends React.Component<{},Props> {
     }        
   }
 
-  loadOptions = async(input: any) => {
-    const api = `/api/kdfinder/keysjson?keyCode=${input}`;
+  loadOptions = async() => {
+    const api = `/api/kdfinder/keysjson`;
     let response:any = await axiosInstance.get(api , { headers: {'Content-Type': 'application/json'} } );
     var values =  response.data.data.map((obj: any) => {
       return{label: obj.name, value: obj.id}
     })
-    debugger
-    return values;
+    this.setState({keys: values})
   }
 
   renderModal = (id:any,initialValues:any) =>{ 
@@ -265,8 +288,17 @@ class ViewKeysGroup extends React.Component<{},Props> {
             if (!values.user) {
               errors['user'] = 'Required';
             }
-            if (!values.keys) {
+            if (this.state.keysInGroup.length ==0) {
               errors['keys'] = 'Required';
+            }
+            if (!values.tenant) {
+              errors['tenant'] = 'Required';
+            }
+            if (!values.phone_no) {
+              errors['phone_no'] = 'Required';
+            }
+            if (!values.email) {
+              errors['email'] = 'Required';
             }
             if (!values.issueDate) {
               errors['issueDate'] = 'Required';
@@ -300,45 +332,105 @@ class ViewKeysGroup extends React.Component<{},Props> {
                       onChange={handleChange}
                       value={values.name}
                     />
-                  <small id="locationHelp" className="form-text text-muted text-danger">{errors.name}</small>
+                  <small id="locationHelp" className="form-text  text-danger">{errors.name}</small>
                 </div>
                 <div className="form-group col-6">
                   <label>Issue Date</label>
                   <Calendar id="basic" placeholder="DD/MM/YYYY " 
 								 name="issueDate" style={{width: '100px'}} value={values.issueDate} className="w-100" onChange={(e:any) => setFieldValue("issueDate",e.value.toLocaleDateString("fr-CA"))}   showIcon/>
-                  <small id="addressHelp" className="form-text text-muted text-danger">{errors.issueDate}</small>
+                  <small id="addressHelp" className="form-text  text-danger">{errors.issueDate}</small>
+                </div>
+              </div>
+              <div className="row">
+                <div className="form-group col-6">
+                  <label>Tenant</label>
+                  <input type="text" name="tenant" 
+                      className="form-control"
+                      placeholder="Enter Tenant"
+                      onChange={handleChange}
+                      value={values.tenant}
+                    />
+                  <small id="locationHelp" className="form-text  text-danger">{errors.tenant}</small>
+                </div>
+                <div className="form-group col-6">
+                  <label>First/Last Name</label>
+                  <input type="text" name="user" 
+                      className="form-control"
+                      placeholder="Enter Name"
+                      onChange={handleChange}
+                      value={values.user}
+                    />
+                  <small id="locationHelp" className="form-text  text-danger">{errors.user}</small>
+                </div>
+              </div>
+              <div className="row">
+                <div className="form-group col-6">
+                  <label>Cell No</label>
+                  <input type="text" name="phone_no" 
+                      className="form-control"
+                      placeholder="Enter Cell No"
+                      onChange={handleChange}
+                      value={values.phone_no}
+                    />
+                  <small id="locationHelp" className="form-text  text-danger">{errors.phone_no}</small>
+                </div>
+                <div className="form-group col-6">
+                  <label>Email</label>
+                  <input type="email" name="email" 
+                      className="form-control"
+                      placeholder="Enter Email"
+                      onChange={handleChange}
+                      value={values.email}
+                    />
+                  <small id="locationHelp" className="form-text  text-danger">{errors.email}</small>
                 </div>
               </div>
               <div className="form-group">
                 <label>Keys</label>
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
+                <Select
                   placeholder={'Please select keys'}
-                  isSearchable={false}
-                  value={values.keys}
                   getOptionLabel={e => e.label}
+                  className="dropdown"
+                  isClearable
+                  value={this.state.isSelected}
                   getOptionValue={e => e.value}
-                  loadOptions={this.loadOptions}
+                  options={this.state.keys} // set list of the data
                   onChange={(opt, e) => {
+                    this.setState({isSelected: opt})
                     setFieldValue("keys",opt)
                   }}
-                  isMulti
                 />
-                <small id="addressHelp" className="form-text text-muted text-danger">{errors.keys}</small>
+                
+                <small id="addressHelp" className="form-text  text-danger">{errors.keys}</small>
               </div>
+              
+              <button className="btn btn-sm btn-secondary mb-2" onClick={(e) => this.addKeysToGroup(e,values.keys, ()=> setFieldValue("keys", null))} >
+                Add key to Group
+              </button>
               <div className="form-group">
-                <label>User</label>
-                <input type="text" name="user" 
-                    className="form-control"
-                    placeholder="Enter user"
-                    onChange={handleChange}
-                    value={values.user}
-                  />
-                <small id="addressHelp" className="form-text text-muted text-danger">{errors.user}</small>
+                
+                <div className="accordian"> 
+                    <div className="col-12">
+                        <div className="row">
+                          <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Keys In group</p>
+
+                        </div>
+                    </div>
+                </div>
+                <div className="form-group">
+                    <div className="container p-0" style={{minHeight: '100px'}}>
+                    {this.state.keysInGroup.map((obj: any) => {
+                        return (
+                        <button className="btn btn-sm btn-success m-2">
+                          {obj.label}
+                          <span className="badge" onClick={(e: any) => this.removeKeyFromKeysInGroup(e,obj)} style={{background: "white", paddingBottom: '4px', color: "#28a745", marginLeft:"5px"}} >x</span>
+                        </button>)
+                      })}
+                    </div>
+                </div>
               </div>
-              <button type="submit" className="btn btn-primary w-100" disabled={errors.user != undefined || errors.name != undefined || errors.keys != undefined || errors.issueDate != undefined}>
-                Save 
+              <button type="submit" className="btn btn-primary w-100" disabled={errors.user != undefined || errors.name != undefined || this.state.keysInGroup.length == 0 || errors.issueDate != undefined}>
+                Save And Close
               </button>
             </form>
           )}
@@ -358,11 +450,11 @@ class ViewKeysGroup extends React.Component<{},Props> {
   }
   
   handleNewGroup = () => {
+    this.loadOptions()
     var issueDate = new Date()
-    var initialValues = {name: '', user: '',issueDate: issueDate, keys: []}
-    this.setState({selectedId: null})
+    var initialValues = {name: '', user: '',issueDate: issueDate, keys: [], email: '', phone_no: '', tenant: ''}
+    this.setState({keysInGroup: [], isSelected: null})
     this.setState({initialValues: initialValues})
-    this.setState({keys: this.state.freeKeys})
     this.openModal()
   }
 
@@ -387,30 +479,33 @@ class ViewKeysGroup extends React.Component<{},Props> {
     var obj = this.state.data.filter((obj: any) => {
       return obj.id == id
     });
+    this.loadOptions()
     if (obj.length > 0) {
       var user;
+      var email;
+      var phone_no;
+      var tenant;
       var keys:any[] = [];
       var keyValues:any[] = [];
       obj[0].sequence.map((item: any) => {
         user = item.key_holder
+        tenant = item.tenant_location
+        phone_no = item.phone
+        email = item.email
         keys.push({
-          label: item.key_id +"-"+ item.sequence,
-          value: item.id
-        })
-        keyValues.push({
           label: item.key_id +"-"+ item.sequence,
           value: item.id
         })
       });
       var name = obj[0].name
       var issueDate = new Date(obj[0].issue_date)
-      var initialValues = {name: name, user: user,issueDate: issueDate, keys: keyValues}
-      this.setState({selectedId: id})
+      var initialValues = {name: name, user: user,email: email,tenant: tenant,phone_no: phone_no,issueDate: issueDate, keys: keyValues}
+      this.setState({selectedId: null})
       this.setState({initialValues: initialValues})
       this.state.freeKeys.forEach(key => {
         keys.push(key)
       })
-      this.setState({keys: keys});
+      this.setState({keysInGroup: keys});
       this.openModal()
     }
   }
@@ -446,6 +541,10 @@ class ViewKeysGroup extends React.Component<{},Props> {
               <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
                 <tr>
                   <th data-visible="true" >Group Name</th>
+                  <th>Tenant</th>
+                  <th>First/Last Name</th>
+                  <th>Email</th>
+                  <th>Cell No</th>
                   <th>Issue Date</th>
                   <th style={{textAlign:"right"}}>Actions</th>
                 </tr>
@@ -456,7 +555,12 @@ class ViewKeysGroup extends React.Component<{},Props> {
                 <>
                 <tr key={i}>
                   <td><span onClick={()=>this.details(item,i)} style={{cursor:"pointer",color:"#009ED6",textDecoration:"underline"}}>{item.name}</span></td>
-                  <td>{(new Date(item.issue_date)).toLocaleDateString("fr-CA")}</td>
+                  <td>{item.sequence.length > 0 ? item.sequence[0].tenant_location : ''}</td>
+                  <td>{item.sequence.length > 0 ? item.sequence[0].key_holder : ''}</td>
+                  <td>{item.sequence.length > 0 ? item.sequence[0].email : ''}</td>
+                  <td>{item.sequence.length > 0 ? item.sequence[0].phone : ''}</td>
+                  <td>{item.sequence.length > 0 ? (new Date(item.sequence[0].date_issued)).toLocaleDateString("fr-CA") : ''}</td>
+
                   <td style={{textAlign:"right"}}>
                     <img alt="viewkeys" style={{marginLeft:"0.6rem",width:'0.8rem'}} src={edit1} onClick={() => this.editGroup(item.id)}/>
 
