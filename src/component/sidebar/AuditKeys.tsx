@@ -64,6 +64,8 @@ interface Props{
   selectedKeys: any;
   selectedGroups: any;
   initialValues: any;
+  groupsDetails: any;
+  keysDetails: any;
 }
 
 class AuditKeys extends React.Component<{},Props> {
@@ -76,7 +78,8 @@ class AuditKeys extends React.Component<{},Props> {
     this.state={
       showDetails: false,
       edit:false,
-      
+      keysDetails: {},
+      groupsDetails: {},
       groups:[],
       auditType: null,
       view:[],
@@ -113,8 +116,9 @@ class AuditKeys extends React.Component<{},Props> {
   };
 
     
-  fetchedData = async(offset:any,limit:any) => {
+  fetchedData = async() => {
     this.setState({loading : true});
+    this.details()
     this.setState({loading : false});
     
     return ;
@@ -122,7 +126,8 @@ class AuditKeys extends React.Component<{},Props> {
 
   
   componentDidMount = () =>{
-    this.fetchedData(null,null);
+    this.details()
+    this.fetchedData();
   }
 
   load = ()=>{
@@ -140,7 +145,7 @@ class AuditKeys extends React.Component<{},Props> {
   
   openGroups = async() => {
     this.setState({auditType: 'group'})
-    this.setState({loading: true})
+    this.setState({loading: true,selectedGroups: []})
     this.fetchGroups()
   }
 
@@ -159,22 +164,37 @@ class AuditKeys extends React.Component<{},Props> {
       this.toast.current.show({severity: 'error',  detail: 'No group found'});
     }
   }
+  
+  details = async() => {
+    const api = `/api/kdfinder/keyaudits`;
+    let response = await axiosInstance.get(api , { headers: {'Content-Type': 'application/json'} } );
+    this.setState({groupsDetails:response.data.groups, keysDetails:response.data.keys });
+  }
 
   openKeys = async() => {
-    this.setState({auditType: 'selectKeys'})
+    this.setState({auditType: 'selectKeys', selectedKeys: []})
     this.setState({loading: true})
     this.fetchKeys()
   }
 
   addInSelectedKeysList = (e: any) => {
+    var selectedKeys = this.state.selectedKeys
     if(e.target.checked){
-      var selectedKeys = this.state.selectedKeys
-      selectedKeys.push(e.target.value);
-      this.setState({selectedKeys: selectedKeys});
+      if(e.target.value === "all"){
+        var keysId = this.state.keys.map((obj: any) =>  obj.id)
+        this.setState({selectedKeys: keysId})
+      }else{
+        selectedKeys.push(Number(e.target.value));
+        this.setState({selectedKeys: selectedKeys});
+      }
     }else{
       var selectedKeys = this.state.selectedKeys
-      selectedKeys = selectedKeys.filter((obj: any) => obj != e.target.value)
-      this.setState({selectedKeys: selectedKeys});
+      if(e.target.value === "all"){
+        this.setState({selectedKeys: []})
+      }else{
+        selectedKeys = selectedKeys.filter((obj: any) => obj != e.target.value)
+        this.setState({selectedKeys: selectedKeys});
+      }
     }
   }
 
@@ -188,6 +208,8 @@ class AuditKeys extends React.Component<{},Props> {
           this.setState({loading : false});
         this.toast.current.show({severity: 'success',  detail: 'Successful run report'});
         this.setState({auditType: ''})
+        this.fetchedData()
+
       }else {
         this.setState({loading : false});
         this.toast.current.show({severity: 'error',  detail: 'Something went wrong'});
@@ -206,23 +228,35 @@ class AuditKeys extends React.Component<{},Props> {
         this.setState({loading : false});
       this.toast.current.show({severity: 'success',  detail: 'Successful run report'});
       this.setState({auditType: ''})
+      this.fetchedData()
+
     }else {
       this.setState({loading : false});
       this.toast.current.show({severity: 'error',  detail: 'Something went wrong'});
       this.setState({auditType: ''})
 
     }
+
   }
 
   addInSelectedGroupsList = (e: any) => {
+    var selectedGroups = this.state.selectedGroups
     if(e.target.checked){
-      var selectedGroups = this.state.selectedGroups
-      selectedGroups.push(e.target.value);
-      this.setState({selectedGroups: selectedGroups});
+      if(e.target.value === "all"){
+        var groupIds = this.state.groups.map((obj: any) =>  obj.id)
+        this.setState({selectedGroups: groupIds})
+      }else{
+        selectedGroups.push(Number(e.target.value));
+        this.setState({selectedGroups: selectedGroups});
+      }
     }else{
       var selectedGroups = this.state.selectedGroups
-      selectedGroups = selectedGroups.filter((obj: any) => obj != e.target.value)
-      this.setState({selectedGroups: selectedGroups});
+      if(e.target.value === "all"){
+        this.setState({selectedGroups: []})
+      }else{
+        selectedGroups = selectedGroups.filter((obj: any) => obj != e.target.value)
+        this.setState({selectedGroups: selectedGroups});
+      }
     }
   }
 
@@ -240,6 +274,12 @@ class AuditKeys extends React.Component<{},Props> {
       this.setState({loading : false});
       this.toast.current.show({severity: 'error',  detail: 'No key found'});
     }
+  }
+  completeAudit = (type: string) =>{
+    const api = `/api/kdfinder/complete_audit/${type}`;
+      axiosInstance.get(api , { headers: {'Content-Type': 'application/json'} } ).then((response: any) => {
+        this.fetchedData()
+      })
   }
 
   render(){
@@ -264,23 +304,17 @@ class AuditKeys extends React.Component<{},Props> {
                     </tr>
                     </thead>
                     <tbody className="table-bordered">
-                        <tr>
-                            <td>AUDIT ALL KEYS</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td><a href="">Complete Audit</a></td>
+                        <tr style={{cursor: 'pointer'}} >
+                            <td onClick={ this.openGroups}>Audit Key Groups</td>
+                            <td onClick={ this.openGroups}>{this.state.groupsDetails.confirmed}</td>
+                            <td onClick={ this.openGroups}>{this.state.groupsDetails.waiting}</td>
+                            <td><a href="javascript:void(0)" onClick={ () => this.completeAudit('group')}>Complete Audit</a></td>
                         </tr>
-                        <tr style={{cursor: 'pointer'}} onClick={ this.openGroups}>
-                            <td>Audit Key Groups</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td><a href="">Complete Audit</a></td>
-                        </tr>
-                        <tr style={{cursor: 'pointer'}} onClick={ this.openKeys}>
-                            <td>Audit Selection of Keys</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td><a href="">Complete Audit</a></td>
+                        <tr style={{cursor: 'pointer'}} >
+                            <td onClick={ this.openKeys}>Audit Selection of Keys</td>
+                            <td onClick={ this.openKeys}>{this.state.keysDetails.confirmed}</td>
+                            <td onClick={ this.openKeys}>{this.state.keysDetails.waiting}</td>
+                            <td ><a href="javascript:void(0)" onClick={ () => this.completeAudit('key')} >Complete Audit</a></td>
                         </tr>
                     </tbody> 
                 </table>
@@ -292,7 +326,7 @@ class AuditKeys extends React.Component<{},Props> {
             <table className="table" style={{backgroundColor:"#fff"}}>
               <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
                 <tr>
-                    <th>Select</th>
+                    <th><input type="checkbox" value={"all"} onChange={this.addInSelectedGroupsList} /> Select</th>
                   <th data-visible="true" >Group Name</th>
                 </tr>
               </thead>
@@ -301,8 +335,7 @@ class AuditKeys extends React.Component<{},Props> {
               return(
                 <>
                 <tr key={i}>
-                  <td><input type="checkbox" value={item.id} onChange={this.addInSelectedGroupsList}/></td>
-
+                  <td><input type="checkbox" value={item.id} onChange={this.addInSelectedGroupsList} checked={this.state.selectedGroups.includes(item.id)}/></td>
                   <td>{item.name}</td>
                 </tr>
                 </>
@@ -322,7 +355,8 @@ class AuditKeys extends React.Component<{},Props> {
                         <table className="table" style={{backgroundColor:"#fff"}}>
                             <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
                             <tr>
-                                <th>Select</th>
+                               <th><input type="checkbox" value={"all"} onChange={this.addInSelectedKeysList} /> Select</th>
+
                                 <th data-visible="true" >Key ID Stamp</th>
                                 <th>Email</th>
                                 <th>Phone</th>
@@ -333,7 +367,7 @@ class AuditKeys extends React.Component<{},Props> {
                             return(
                             <>
                             <tr key={i}>
-                               <td><input type="checkbox" value={item.id} onChange={this.addInSelectedKeysList}/></td>
+                               <td><input type="checkbox" value={item.id} onChange={this.addInSelectedKeysList} checked={this.state.selectedKeys.includes(item.id)}/></td>
                                 <td>{item.key_id +" - "+ item.sequence}</td>
                                 <td>{item.email}</td>
                                 <td>{item.phone}</td>

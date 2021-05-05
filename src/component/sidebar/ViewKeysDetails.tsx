@@ -4,6 +4,7 @@ import questionmark from '../icons/questionmark.svg';
 import edit1 from '../icons/edit.svg';
 import 'jspdf-autotable';
 import tick from '../icons/tick.svg';
+import verify from '../icons/tick.png';
 import cross from '../icons/cross.svg';
 import axiosInstance from '../../api/api';
 import FadeLoader from "react-spinners/FadeLoader";
@@ -94,6 +95,37 @@ class ViewKeysDetails extends React.Component<{viewdata:any,load:any,loadc:any},
         }
  			});
 };
+  onUpdateVerifyMethod = (e: any,item:any,id:any) => {
+    this.setState({verify_mthod : item.verify_method});
+    let name = e.target.name;
+    let value= e.target.value;
+    let verify_method:any = null;
+    verify_method= value;
+
+    const updateCheck = this.state.data.map((obj:any,i:any)=>{
+      if(id===i){
+        obj.verify_method = verify_method;
+      }
+      return {...obj}
+    })
+    this.setState({data: updateCheck});
+    axiosInstance
+      .patch(`/api/kdfinder/sequence/${item.id}/`,{
+        verify_method: verify_method,
+            },
+              { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} }
+            )
+			.then((res) => {
+        if(res.data.status===200){
+          this.toast.current.show({severity: 'success',  detail: 'Updated successfully'});
+          this.props.load();
+        }else {
+          this.toast.current.show({severity: 'error',  detail: 'Not Updated'});
+          this.props.load();
+        }
+ 			});
+
+  } 
 
  onUpdate = (e:any,id:any)=>{
   e.preventDefault();
@@ -190,6 +222,7 @@ class ViewKeysDetails extends React.Component<{viewdata:any,load:any,loadc:any},
                 <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Phone </th>
                 <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Email ID </th>
                 <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Issue Date</th>
+                <th style={{fontWeight:500,margin:0,width:"6.65rem"}}>Verify method</th>
                 <th style={{fontWeight:500,textAlign:"right",margin:0,width:"6.65rem"}} scope="col">Edit Data</th>
                 <th style={{fontWeight:500,textAlign:'center',margin:0,width:"6.65rem"}} scope="col">Actions</th>
               </tr>
@@ -200,11 +233,21 @@ class ViewKeysDetails extends React.Component<{viewdata:any,load:any,loadc:any},
               <tr key={i}>
                 <th style={{margin:0,width:"6.65rem"}} scope="row">{item.key_id +" - "+ item.sequence}</th>
                 <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="tenant_location" value={this.state.tenant_location} onChange={this.handleInputChange}  /> : item.tenant_location}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="key_holder" value={this.state.key_holder} onChange={this.handleInputChange}   /> : item.key_holder}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="phone" value={this.state.phone} onChange={this.handleInputChange}   /> : item.phone}</td>
-                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="email" value={this.state.email} onChange={this.handleInputChange}  /> : item.email}</td>
+                <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="key_holder" value={this.state.key_holder} onChange={this.handleInputChange}   /> : (item.group ? <a href='/home/viewkeysgroup'>Group={item.group_data.name}</a> : item.key_holder)}</td>
+                <td style={{margin:0,width:"7.65rem"}}><div className="d-flex">{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="phone" value={this.state.phone} onChange={this.handleInputChange}   /> : item.phone}{
+                   item.verify_method === 'phone' ? <img alt="viewkeys" style={{marginLeft:"0.6rem",width:'1.4rem'}} src={verify}/>  : ''
+                }</div></td>
+                <td style={{margin:0,width:"7.65rem"}}><div className="d-flex">{item.editData ? <input style={{height:'2rem',width:"7.65rem",padding:'.5rem',margin:0}} type="text" className="form-control" name="email" value={this.state.email} onChange={this.handleInputChange}  /> : item.email}
+                {
+                   item.verify_method === 'email' ? <img alt="viewkeys" style={{marginLeft:"0.6rem",width:'1.4rem'}} src={verify}/>  : ''
+                }</div></td>
                 <td style={{margin:0,width:"7.65rem"}}>{item.editData ? <Calendar style={{height:'2rem',width:"7.65rem",padding:0,margin:0}} id="date_issued" placeholder="YYYY-MM-DD" value={this.state.date_issued} onChange={(e:any) => this.setState({date_issued:e.value.toLocaleDateString("fr-CA")})}/> : item.date_issued}</td>
-
+                <td style={{margin:0,width:"7.65rem"}}>
+                  <select onChange={(e)=>this.onUpdateVerifyMethod(e,item,i)} className="form-select" style={{padding: '0.1rem 1.75rem .1rem .75rem', fontSize: '0.8rem', backgroundPosition: 'right .5rem center', backgroundSize: '10px 10px'}} aria-label="Default select example">
+                    <option value="email" selected={item.verify_method === "email"}>Email</option>
+                    <option value="phone" selected={item.verify_method === "phone"}>Phone</option>
+                  </select>
+                </td>
                 <td style={{textAlign:"center",margin:0,width:"6.65rem"}}>
                   { 
                     item.group ? <></> 

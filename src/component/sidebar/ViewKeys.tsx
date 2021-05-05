@@ -162,9 +162,10 @@ class ViewKeys extends React.Component<{},Props> {
         this.setState({currentuser:response.data.results.current_user});
         this.setState({totalRecords:response.data.count});
         this.setState({files: response.data.results.file_numbers })
+        debugger
         this.setState({file:response.data.results.file_numbers.map((item: any)=>{ 
           return (
-          { label: item.system_name, value: item.id}
+          { label: item.file_number + " " +(item.location ? item.location : ''),  value: item.id}
           )
         })});
         if(this.state.isSelected===''){
