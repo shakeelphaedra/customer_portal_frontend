@@ -18,7 +18,13 @@
 .MuiPaper-rounded {
     border-radius: 4px;
 }
-
+input:active, 
+input:focus
+{   
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
 .MuiPaper-root {
     color: rgba(0, 0, 0, 0.87);
     transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;

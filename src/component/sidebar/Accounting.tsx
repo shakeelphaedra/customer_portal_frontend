@@ -12,14 +12,12 @@ import { Toast } from 'primereact/toast';
 import { Paginator } from 'primereact/paginator';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
 import fileDownload from 'js-file-download'
 import Payment from './Payement/Payment';
 import  jsPDF from "jspdf";
 import 'jspdf-autotable';
 import { autoTable } from 'jspdf-autotable';
 import image from '../icons/pdf-1.svg';
-
 const override = css`
   margin: 0 auto;
   border-color: red;
@@ -34,10 +32,12 @@ interface Props{
     loc_no:any;
     last_name: any;
     cus_no:any;
+    braintreeClientToken:any;
     terms:any;
     total_amount:any;
     loading : boolean;
     modalIsOpen:any;
+    paymentModalIsOpen:any;
     invoiceModalIsOpen:any;
     allInvoiceModalIsOpen:any;
     address :any;
@@ -64,6 +64,7 @@ interface Props{
   }
 class Accounting extends React.Component<{},Props> {
   mytoast: React.RefObject<any>;
+  instance: any;
     constructor(props:Props){
         super(props);
         this.mytoast = React.createRef();
@@ -77,9 +78,11 @@ class Accounting extends React.Component<{},Props> {
           total_amount:'',
           over_30:'',
           over_60:'',
+          braintreeClientToken: null,
           over_90:'',
           loading : false,
           modalIsOpen: false,
+          paymentModalIsOpen: false,
           invoiceModalIsOpen:false,
           allInvoiceModalIsOpen:false,
           address : '',
@@ -125,6 +128,7 @@ class Accounting extends React.Component<{},Props> {
               width                 : '46.875rem',
               height                : '37.5rem',
             }
+
           };
 
 
@@ -203,7 +207,6 @@ class Accounting extends React.Component<{},Props> {
 
         componentDidMount = async ()=>{
             try {
-                
                 const api = '/api/customer/accounting/';
                 this.setState({loading:true});
                 let response = await axiosInstance.get(api, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
@@ -232,7 +235,14 @@ class Accounting extends React.Component<{},Props> {
                     node.show({severity: 'error', detail: 'Server Error'});
                 }
                 throw error;
-            }
+            };
+            this.getbraintreeClientToken()
+        }
+
+        async getbraintreeClientToken(){
+          let response = await axiosInstance.get('/api/customer/braintree/get_client_token', { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
+          const token = response.data.token;
+          this.setState({braintreeClientToken: token})
         }
 
         formValidation = () =>{
@@ -296,7 +306,6 @@ class Accounting extends React.Component<{},Props> {
       }
 
         details=(loc_no:any,id:any)=> {
-          
             const updatedData = this.state.tableData.map((obj:any,i:number)=>{
               if(i===id){
                 if(obj.showDetails=== false){
@@ -357,10 +366,39 @@ class Accounting extends React.Component<{},Props> {
               )
             }
           } 
+          async buy() {
+            const { nonce } = await this.instance.requestPaymentMethod();
+            const api = `/api/customer/payments/`;
+            const data = {"nonce" :  nonce, "amount" : this.state.selectedAllAmount}
+            debugger
+            let response = await axiosInstance.post(api, data, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
 
+          }
+
+          renderBillingModal = () => {
+            return (
+                !this.state.braintreeClientToken ? 
+                    <div>
+                      <h1>Loading...</h1>
+                    </div>
+                :
+                    
+                <div>
+                {/* <DropIn
+                  options={{
+                    authorization: this.state.braintreeClientToken
+                  }}
+                  onInstance={(instance) => (this.instance = instance)}
+                /> */}
+                <button className="btn btn-primary" onClick={this.buy.bind(this)}>Buy Now!</button>
+              </div>
+        
+            )
+          }
           renderModal = () =>{ 
             return(
                 <>
+
                 <div>
                 <div style={{textAlign:'right'}}>
                   <img alt="cancel" style={{width:'1.875rem',cursor:'pointer'}} onClick={this.closeModal} src={cancel}/>
@@ -432,7 +470,13 @@ class Accounting extends React.Component<{},Props> {
           }
 
           changeModal = () =>{
-            this.setState({invoiceModalIsOpen:false});
+            const node = this.mytoast.current;
+            if(node){
+                node.show({severity: 'success', detail: 'Payment Success'});
+            }
+            this.setState({invoiceModalIsOpen:false, allInvoiceModalIsOpen: false, card: false});
+            window.open("https://payments.calgarylockandsafe.com/")
+
           }
 
           renderInvoiceModal = () =>{
@@ -448,6 +492,8 @@ class Accounting extends React.Component<{},Props> {
                          selectedProducts={this.state.selectedProducts}
                          loc_no={this.state.invoiceLoc_no}
                          getItem={this.changeModal}
+                         cancelBtn={this.cancelPay}
+
                           />
                 <div style={{textAlign:'center'}}>
                 <button 
@@ -486,10 +532,10 @@ class Accounting extends React.Component<{},Props> {
                          className="btn btn-primary" disabled>Pay Now  ${this.state.selectedAmount}</button>  
                       </div> :
                       <div style={{textAlign:'right'}}>
-                      {/* <button type="submit" style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
-                        className="btn btn-primary" onClick={this.pay}>Pay Now  ${this.state.selectedAmount}</button>  */} 
-                        <a href={'https://payments.calgarylockandsafe.com/'} style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
-                        className="btn btn-primary" >Pay Now  ${this.state.selectedAmount}</a>
+                      <button type="submit" style={{backgroundColor:"#?009ED6",borderColor:"#009ED6"}}
+                        className="btn btn-primary" onClick={this.pay}>Pay Now  ${this.state.selectedAmount}</button>  
+                        {/* <a href={'https://payments.calgarylockandsafe.com/'} style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}} */}
+                        {/* className="btn btn-primary" >Pay Now  ${this.state.selectedAmount}</a> */}
                      </div>
                         }
                   </div>
@@ -497,6 +543,7 @@ class Accounting extends React.Component<{},Props> {
               )
           }
           }
+          
 
           renderAllInvoiceModal = () =>{
             if(this.state.card){
@@ -508,12 +555,11 @@ class Accounting extends React.Component<{},Props> {
                 <Payment invoiceALLLocation={this.state.last_name} 
                          selectedAmount={this.state.selectedAllAmount}
                          selectedProducts={this.state.selectedAllProducts}
+                         getItem={this.changeModal}
+                         cancelBtn={this.cancelPay}
                           />
                 <div style={{textAlign:'center'}}>
-                <button 
-                  className="btn btn-outline-danger"
-                  type="button"><span className="MuiButton-label" onClick={this.cancelPay} >Cancel</span><span
-                      className="MuiTouchRipple-root"></span></button>
+
                   </div>         
                           
                 </>
@@ -549,10 +595,10 @@ class Accounting extends React.Component<{},Props> {
                          className="btn btn-primary" disabled>Pay Now  ${this.state.selectedAllAmount}</button>  
                       </div> :
                       <div style={{textAlign:'right'}}>
-                      {/* <button type="submit" style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
-                        className="btn btn-primary" onClick={this.pay}>Pay Now  ${this.state.selectedAllAmount}</button>   */}
-                        <a href={'https://payments.calgarylockandsafe.com/'} style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
-                        className="btn btn-primary" >Pay Now  ${this.state.selectedAllAmount}</a>
+                      <button type="submit" style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
+                        className="btn btn-primary" onClick={this.pay}>Pay Now  ${this.state.selectedAllAmount}</button>  
+                        {/* <a href={'https://payments.calgarylockandsafe.com/'} style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
+                        {/* className="btn btn-primary" >Pay Now  ${this.state.selectedAllAmount}</a> */}
                      </div>
                         }
                   </div>
@@ -571,16 +617,15 @@ class Accounting extends React.Component<{},Props> {
             try {
               const api = `/api/customer/invoice/payment/${loc_no}/`;
               let response = await axiosInstance.get(api, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
-              
               this.setState({allInvoice : response.data});
               if(!(this.state.allInvoice === null))
               {
                   this.setState({loading : false});
               }
-          }catch(error){
-              this.setState({loading : false});
-              throw error;
-          }
+            }catch(error){
+                this.setState({loading : false});
+                throw error;
+            }
             this.setState({ invoiceModalIsOpen:true, invoiceAddress:invoiceAddress, invoiceLocation:invoiceLocation, invoiceLoc_no:loc_no});
             
           }
@@ -608,6 +653,7 @@ class Accounting extends React.Component<{},Props> {
                   this.setState({loading : false});
               }
           }catch(error){
+
               this.setState({loading : false});
               throw error;
           }
@@ -677,6 +723,7 @@ class Accounting extends React.Component<{},Props> {
                                       </div>
                                   </div>
                                   
+       
                                   <button className="btn btn-info" onClick={this.invoiceModalPayAll}>
                                       Pay All
                                   </button>

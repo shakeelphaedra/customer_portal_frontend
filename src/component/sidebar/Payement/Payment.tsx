@@ -27,23 +27,30 @@ const Payment = (props:any) => {
          invoiceNumber:0,
          invoiceAmount:0,
          loading:false,
+         phone: '',
          invoiceModalIsOpen:true,
     });
 
     const [formData, setFormData]:any = useState(initialFormData);
+    const [email, setEmail]:any = useState("");
+    const [phone, setPhone]:any = useState("");
 
     useEffect(()=> {
         renderPayment();
         console.log(props);
     },[]);
-
+    const changeEmail = (e: any) => {
+        setEmail(e.target.value)
+    }
+    const changePhone = (e: any) => {
+        setPhone(e.target.value)
+    }
     const renderPayment = async()=> {
         setFormData({...formData,loading:true});
         try {
-            const api = `${baseURL}api/customer/get-payment-token/`;
-            let response = await axios.get(api, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
+            const api = `/api/customer/get-payment-token/`;
+            let response = await axiosInstance.get(api, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
             setFormData({...formData, token:response.data.token});
-            console.log(response);
         
         let authorization = response.data.token;
         //console.log(authorization);
@@ -54,7 +61,6 @@ const Payment = (props:any) => {
         }, (err, clientInstance)=> {
         if(err){
             console.log(err);
-            //setFormData({...formData,err:err});
             return;
         }
         createHostedFields(clientInstance, form);
@@ -75,21 +81,24 @@ const Payment = (props:any) => {
                 },
                 '.valid': {
                 'color': '#8bdda8'
+                },
+                '.invalid': {
+                'color': 'red'
                 }
             },
             fields: {
                 number: {
                 selector: '#card-number',
-                placeholder: '4111 1111 1111 1111'
+                placeholder: 'Card Number'
                 },
                 cvv: {
                 selector: '#cvv',
-                placeholder: '123'
+                placeholder: 'CVV'
                 },
                 expirationDate: {
                 selector: '#expiration-date',
-                placeholder: 'MM/YYYY'
-                }
+                placeholder: 'Expiry'
+                },
             }
             }, hostedFieldsDidCreate);
           }
@@ -111,13 +120,9 @@ const Payment = (props:any) => {
         let submitBtn = document.getElementById('submit');
         submitBtn?.setAttribute('disabled', 'disabled');
         console.log(hostedFields);
-        hostedFields.tokenize(function (err:any, payload:any) {
-          if (err) {
-            setFormData({...formData,loading:false});
-            submitBtn?.removeAttribute('disabled');
-            console.error('Error',err.message);
-            toast.current.show({severity: 'error', detail: err.message})
-          } else {
+        debugger
+        hostedFields.tokenize().then((payload:any) => {
+            debugger
             console.log(payload.nonce);
             if(payload.nonce){
             if(props.invoiceAddress){
@@ -127,7 +132,9 @@ const Payment = (props:any) => {
                 location: props.invoiceLocation,
                 address: props.invoiceAddress,
                 amount: props.selectedAmount,
-                list_of_invoice: props.selectedProducts
+                list_of_invoice: props.selectedProducts,
+                email: email,
+                phone: phone
 			})
 			.then((res) => {
                 setFormData({...formData,loading:false});
@@ -140,6 +147,8 @@ const Payment = (props:any) => {
                 }
                 console.log(res);
             }).catch((error)=>{
+            debugger
+
                 setFormData({...formData,loading:false});
                 toast.current.show({severity: 'error', detail: 'Server error'});
             })
@@ -148,12 +157,15 @@ const Payment = (props:any) => {
 			.post(`api/customer/invoice/payment/`, {
                 payment_method_nonce: payload.nonce,
                 amount: props.amount,
-                invoice: props.invoice
+                invoice: props.invoice,
+                email: email,
+                phone: phone
 			})
 			.then((res) => {
                 setFormData({...formData,loading:false});
                 if(res.data.status===202){
                     toast.current.show({severity: 'success', detail: 'Payment successful'});
+                    setFormData({...formData, allInvoiceModalIsOpen:false});
                 }else{
                     toast.current.show({severity: 'error', detail: 'Payment Denied'});
                 }
@@ -168,12 +180,17 @@ const Payment = (props:any) => {
                 payment_method_nonce: payload.nonce,
                 location: props.invoiceALLLocation,
                 amount: props.selectedAmount,
-                list_of_invoice: props.selectedProducts
+                list_of_invoice: props.selectedProducts,
+                email: email,
+                phone: phone
 			})
 			.then((res) => {
                 setFormData({...formData,loading:false});
                 if(res.data.status===202){
                     toast.current.show({severity: 'success', detail: 'Payment successful'});
+                    setTimeout(()=> {
+                        props.getItem(false)
+                    }, 1000) 
                 }else{
                     toast.current.show({severity: 'error', detail: 'Payment Denied'});
                 }
@@ -187,7 +204,9 @@ const Payment = (props:any) => {
 			.post(`api/customer/quote/payment/`, {
                 payment_method_nonce: payload.nonce,
                 amount: props.amount,
-                quote: props.quote
+                quote: props.quote,
+                email: email,
+                phone: phone
 			})
 			.then((res) => {
                 setFormData({...formData,loading:false});
@@ -203,12 +222,19 @@ const Payment = (props:any) => {
             })
         }
         }
-          }
-        });
+        }).catch((err:any)=> {
+            debugger
+            setFormData({...formData,loading:false});
+            submitBtn?.removeAttribute('disabled');
+            console.error('Error',err.message);
+            toast.current.show({severity: 'error', detail: err.message})
+        })
       }
 
     
-
+      const cancelBtn = (e:any) => {
+        props.cancelBtn()
+      }
 
     const formValidation = () =>{
         let isValid = true;
@@ -245,10 +271,10 @@ const Payment = (props:any) => {
         <>
             <div className="MuiPaper-root MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiPaper-elevation24 MuiPaper-rounded" >
               <Toast ref={toast} />
-                <div className="MuiDialogTitle-root">
-                    <h2 className="MuiTypography-root MuiTypography-h6">Pay Invoice</h2>
+                <div className="MuiDialogTitle-root" style={{padding: 0}}>
+                    <h2 className="MuiTypography-root MuiTypography-h6 mb-2">Pay Invoice</h2>
                 </div>
-                <div className="MuiDialogContent-root">
+                <div className="MuiDialogContent-root" style={{padding: 0}}>
                     <p className="MuiTypography-root MuiDialogContentText-root MuiTypography-body1 MuiTypography-colorTextSecondary">
                         Please enter your payment information</p>
                     <div className="MuiBox-root jss123">
@@ -279,25 +305,28 @@ const Payment = (props:any) => {
                         </div>
                         
                         <div className="MuiBox-root jss125" style={{display: 'flex', flex: '1 1 0px', paddingLeft: '0.5rem',marginTop:'-3rem'}}>
-                        <form action="/" method="post" id="cardForm">
-                            <div className="col" style={{padding:'.5rem'}}>
-                                <label>Card number:</label>
+                        <form action="/" method="post" id="cardForm" style={{marginTop: "2rem"}}>
+                            <div className="col pr-0" style={{padding:'.3rem', paddingTop: '1rem'}}>
                                 <div id='card-number' className='form-control'></div>
                             </div>
-                            <div className="col" style={{padding:'.5rem'}}>
-                                <label>Expiry Date:</label>
-                            <div id='expiration-date' className='form-control'></div>
+                            <div className="col pr-0" style={{padding:'.3rem'}}>
+                                <input type="text" id='card-holder-name' placeholder="Name" className='form-control' style={{color: '#8bdda8'}} required/>
                             </div>
-                            <div className="col" style={{padding:'.5rem'}}>
-                                <label>CVV#</label>
-                            <div id='cvv' className='form-control'></div>
+                            <div className="col pr-0" style={{padding:'.3rem'}}>
+                                <div id='expiration-date' className='form-control'></div>
+                            </div>
+                            <div className="col pr-0" style={{padding:'.3rem'}}>
+                                <div id='cvv' className='form-control'></div>
+                            </div>
 
-                            </div>
-                        
                         </form>
-                        <div className='overlay-box1'>
-                            <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={formData.loading}  height={30} width={5} radius={2} margin={20} />
-                        </div>
+
+                        {
+                         formData.loading ?  <div className="overlay-box1">
+                                <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={formData.loading}  height={30} width={5} radius={2} margin={20} />
+                            </div>
+                            : ""
+                        }
                             </div>
                             </div>
                                 {/* <div className="MuiBox-root jss130" style={{minWidth: '450px'}}>
@@ -321,17 +350,35 @@ const Payment = (props:any) => {
                                       </div>
                                     </div> */}
                 </div>         
+                                    
+                            <div className="d-flex" >
+                                <input type="text" onChange={changePhone} value={phone} id='phone' placeholder="Number" className='form-control' style={{color: '#8bdda8'}} required/>
+                                <input type="text" id='street' placeholder="Street" className='form-control' style={{color: '#8bdda8'}} required/>
+                                <input type="text" placeholder="Postal" id='postal-code' className='form-control' style={{color: '#8bdda8'}} required/>
+                            </div>
+                            <input type="email" onChange={changeEmail} value={email} placeholder="Email" id='email' style={{color: '#8bdda8'}} className='form-control mt-2' required/>
+
                       {   formValidation() ? 
-                          <div style={{textAlign:'center'}}>
-                          <button style={{marginLeft:'4.55rem',marginTop:'1rem'}}
-                            className="btn btn-outline-info"
-                             type="submit" id='submit' ><span className="MuiButton-label"  >Submit Payment</span>
+                          <div style={{textAlign: "end"}}>
+                          <button 
+                            className="btn text-danger" style={{fontWeight: 'bold', fontSize: '12px', marginTop: '10px',}}
+                             id='cancel' ><span className="MuiButton-label" onClick={cancelBtn} >CANCEL</span>
+                             </button>
+                             
+                          <button 
+                            className="btn MuiTypography-colorTextSecondary" style={{fontWeight: 'bold',padding: 0,marginLeft: '8px', marginTop: '10px', fontSize: '12px'}}
+                             type="submit" id='submit' ><span className="MuiButton-label"  >SUBMIT PAYMENT</span>
                              </button>
                           </div> : 
-                          <div style={{textAlign:'center'}}>
-                          <button style={{marginLeft:'4.55rem',marginTop:'1rem'}}
-                            className="btn btn-outline-info"
-                              disabled><span className="MuiButton-label">Submit Payment</span>
+                          <div>
+                              <button 
+                            className="btn text-danger" style={{fontWeight: 'bold', fontSize: '12px', marginTop: '10px',}}
+                              id='cancel' ><span className="MuiButton-label"  onClick={cancelBtn}>CANCEL</span>
+                             </button>
+                             
+                            <button 
+                            className="btn MuiTypography-colorTextSecondary" style={{fontWeight: 'bold',padding: 0,marginLeft: '8px', marginTop: '10px', fontSize: '12px'}}
+                             type="submit" id='submit' disabled><span className="MuiButton-label"  >SUBMIT PAYMENT</span>
                              </button>
                           </div>
                       }
