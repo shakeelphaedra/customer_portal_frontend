@@ -120,9 +120,7 @@ const Payment = (props:any) => {
         let submitBtn = document.getElementById('submit');
         submitBtn?.setAttribute('disabled', 'disabled');
         console.log(hostedFields);
-        debugger
         hostedFields.tokenize().then((payload:any) => {
-            debugger
             console.log(payload.nonce);
             if(payload.nonce){
             if(props.invoiceAddress){
@@ -147,8 +145,6 @@ const Payment = (props:any) => {
                 }
                 console.log(res);
             }).catch((error)=>{
-            debugger
-
                 setFormData({...formData,loading:false});
                 toast.current.show({severity: 'error', detail: 'Server error'});
             })

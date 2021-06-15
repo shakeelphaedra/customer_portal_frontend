@@ -370,7 +370,6 @@ class Accounting extends React.Component<{},Props> {
             const { nonce } = await this.instance.requestPaymentMethod();
             const api = `/api/customer/payments/`;
             const data = {"nonce" :  nonce, "amount" : this.state.selectedAllAmount}
-            debugger
             let response = await axiosInstance.post(api, data, { headers: {"Authorization" : `Bearer ${localStorage.getItem('access_token')}`} });
 
           }
@@ -475,8 +474,6 @@ class Accounting extends React.Component<{},Props> {
                 node.show({severity: 'success', detail: 'Payment Success'});
             }
             this.setState({invoiceModalIsOpen:false, allInvoiceModalIsOpen: false, card: false});
-            window.open("https://payments.calgarylockandsafe.com/")
-
           }
 
           renderInvoiceModal = () =>{
