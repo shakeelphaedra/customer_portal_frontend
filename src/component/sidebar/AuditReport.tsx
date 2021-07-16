@@ -88,7 +88,8 @@ class AuditReport extends React.Component<{},Props,JQuery> {
   }
 
     handleInputChange = (e: { target: { name: any; value: any; }; }) =>{
-    let name = e.target.name;
+      let name = e.target.name;
+
     let value = e.target.value;
     this.setState({[name]:value});
     
@@ -168,68 +169,104 @@ class AuditReport extends React.Component<{},Props,JQuery> {
                     <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={this.state.loading}  height={30} width={5} radius={2} margin={20} />
                 </div>:''}
         <Toast ref={this.toast} />
-            <div className="upper1" style={{height:"12.5rem"}} >
-            
-              <div className="row" style={{padding:"1rem",paddingTop:'0.625rem'}} >
-                  <div className="col-12">
-                      <span style={{color:"grey",float:"left",fontWeight:"bold",fontSize:"1.25rem",padding:"0.3rem",paddingLeft:'0px'}}>Audit Trail</span>
-                  </div>
-                <div className="col-md-3 mb-3">
-                  <label >Search by First Name</label>
-                  <input type="text" name="first_name" className="form-control" placeholder="Enter First Name" value={this.state.first_name} onChange={this.handleInputChange}/>
-                </div>
-                <div className="col-md-3 mb-3">
-                  <label >Search by Last Name</label>
-                  <input type="text" name="last_name" className="form-control" placeholder="Enter Last Name" value={this.state.last_name} onChange={this.handleInputChange} />
-                </div>
-                <div className="col-md-3 mb-3">
-                  <label >Start Date</label>
-                  <Calendar id="basic" placeholder="DD/MM/YYYY" value={this.state.start_date} onChange={(e:any) => this.setState({start_date:e.value.toLocaleDateString("fr-CA")})}   showIcon/>
-                </div>
-                <div className="col-md-3 mb-3">
-                  <label >End Date</label>
-                  <Calendar id="basic" placeholder="DD/MM/YYYY" value={this.state.end_date} onChange={(e:any) => this.setState({end_date:e.value.toLocaleDateString("fr-CA")})}  showIcon/>
-                </div>
-                  <div className='row' style={{margin:0,padding:0}}>
-                    <div className='col' style={{textAlign:'right'}}>
-                      <button type="submit" style={{backgroundColor:"#009ED6",borderColor:"#009ED6",marginRight:'0.65rem'}}
-                          className="btn btn-primary" onClick={()=> this.fetchedData(null,null)} >Reset</button>
-                      <button type="submit" style={{backgroundColor:"#009ED6",borderColor:"#009ED6"}}
-                          className="btn btn-primary" onClick={this.handleSubmit} >Search</button>
+        <section className="overview">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <h6 className="over-text">Audit Trail</h6>
                     </div>
-                  </div>
                 </div>
-              </div>
-              
-            <div className="content" style={{height:'21rem'}}> 
-            <table id="MyTable" className="table" style={{backgroundColor:"#fff"}}>
-            <thead style={{ color: "#fff",backgroundColor:"#12739A"}}>
-              <tr>
-                <th>User Name</th>
-                <th>Modified Date</th>
-                <th>Action Performed By User</th>
-              </tr>
-            </thead>
-            <tbody className="table-bordered">
-            {this.state.data.map((item: any,i: any)=>{
-              let date = new Date(item.date).toLocaleDateString("fr-CA")
-                return(
-              <tr key={i}>
-                <td>{item.username}</td>
-                <td>{date}</td>
-                <td>{item.modifications}</td>
-              </tr>
-                )})}
-            </tbody> 
-            <tr>
-           <td colSpan={4}>
-           <Paginator className="paginator" first={this.state.first} rows={this.state.rows} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
-                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink " 
-                  onPageChange={this.onPageChange}  ></Paginator>
-                  </td>
-                  </tr>
-          </table>
-          </div>
+            </div>
+        </section>
+        <section className="filter-pannel">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className="filter-pannel-inner  justify-content-between flex-wrap">
+                            <form>
+                                <div className="form-row">
+                                    <div className="form-group col-md-4">
+                                        <label>Search By First Name</label>
+                                        <input type="text" className="form-control"
+                                         value={this.state.first_name} onChange={this.handleInputChange}
+                                          id="inputEmail4" name="first_name" placeholder="Enter First Name" />
+                                    </div>
+                                    <div className="form-group col-md-4">
+                                        <label >Search By Last Name</label>
+                                        <input type="text " className="form-control" id="inputPassword4"
+                                            placeholder="Enter Last Name"
+                                            name="last_name"
+                                            value={this.state.last_name} onChange={this.handleInputChange} />
+                                    </div>
+                                    <div className="form-group col-md-2">
+                                        <label >Start Date</label>
+                                        <input type="date" className="form-control" id="inputPassword4"
+                                         value={this.state.start_date} onChange={(e:any) => {
+                                           this.setState({start_date:new Date(e.target.value).toLocaleDateString("fr-CA")})}}
+                                            placeholder="Password" />
+                                    </div>
+                                    <div className="form-group col-md-2">
+                                        <label >End Date</label>
+                                        <input type="date"
+                                        value={this.state.end_date} onChange={(e:any) => this.setState({end_date:new Date(e.target.value).toLocaleDateString("fr-CA")})}
+                                         className="form-control" id="inputPassword4"
+                                            placeholder="Password"/>
+                                    </div>
+                                </div>
+                            </form>
+                            <div className="filter-pannel-btn d-flex justify-content-end flex-wrap">
+                                <button className="btn" onClick={()=> this.fetchedData(null,null)} >Reset</button>
+                                <button className="btn ml-2" onClick={this.handleSubmit}>Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+         
+        <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Audit trails
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 estimates-table">
+                                  <thead className="thead-light">
+                                    <tr >
+                                      <th>User Name</th>
+                                      <th>Modified Date</th>
+                                      <th>Action Performed By User</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {this.state.data.map((item: any,i: any)=>{
+                                      let date = new Date(item.date).toLocaleDateString("fr-CA")
+                                    
+                                    return(
+                                        <>
+                                    <tr key={i}>
+                                    <td>{item.username}</td>
+                                    <td>{date}</td>
+                                    <td>{item.modifications}</td>
+                                  </tr>
+                                    </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                            
+                        <Paginator className="paginator" first={this.state.first} rows={this.state.rows} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
+                                template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink " 
+                                onPageChange={this.onPageChange}  ></Paginator>      
+                          </div>
+                      </div>
+                  </div>
+                </div>           
+            
         </div>
       </>
     );

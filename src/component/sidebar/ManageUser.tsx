@@ -356,91 +356,113 @@ const permission = () =>{
             {loading ? <div className='overlay-box1'>
                     <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={loading}  height={30} width={5} radius={2} margin={20} />
                 </div> :''}
-            <div className="upper1" >
-                <div className="row">
-                  <div style={{marginTop:"0.625rem",marginLeft:"1.25rem"}} className="col-6">
-                      <p><span style={{color:"#009DD0",fontSize:"1.5rem"}}><span style={{fontWeight:"bold"}}>Welcome</span>  {currentuser.first_name} {currentuser.last_name}</span></p>
-                      <p> Your last log in was on :  <strong>{lastLoginDate}</strong></p>
-                      <p>Last Updated:  <strong>{lastUpdatedDate}</strong></p>
+                <section className="overview">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Manage Users</h6>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section className="filter-pannel">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="filter-pannel-inner d-flex justify-content-between flex-wrap">
+                                    <div>
+                                        <h6>Welcome {currentuser.first_name} {currentuser.last_name}</h6>
+                                        <span className="last-login">Last Login: {lastLoginDate}</span>
+                                    </div>
+                                    <div className="mb-2">
+                                        <button onClick={newuser} className="btn add-group-btn">Add New Group</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+    
+                <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Users
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0">
+                                  <thead className="thead-light">
+                                      <tr >
+                                                        
+                                        <th>User Name</th>
+                                        <th style={{textAlign:"center"}}>Email ID</th>
+                                        <th>Manage Keys</th>
+                                        <th>Request Service</th>
+                                        <th>Pay Bills</th>
+                                        <th>Accept Estimations</th>
+                                        <th>Key Authorizers</th>
+                                        <th>Users</th>
+                                        <th>Audit Trails</th>
+                                        <th style={{textAlign:"right"}}>Actions</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                  {data.map((item: any,i: any)=>{
+                                      return(
+                                        <>
+                                        <tr key={i}>
+                                          <td style={{textAlign:"left"}}>{item.first_name} {item.last_name}</td>
+                                          <td >{item.email}</td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.key_finder} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.service_request} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.inv_statements} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.quotes} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.hs_signatory} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.add_user} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                            <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.audit} className="form-check-input" disabled/>
+                                          </td>
+                                          <td>
+                                          <img style={{cursor:"pointer",marginLeft:'-0.625rem',width:'37%'}} onClick={add_user ? ()=>editdetails(item,i) : permission} alt="edit" src={edit1} />
+                                          <label className="switch" style={{marginLeft:"0.313rem"}}>
+                                              <input type="checkbox" name="userdisable"  defaultChecked={item.is_active} onChange={add_user ? (e)=>handleCheckboxSlider(e,item): permission} disabled={add_user ? false :true}/>
+                                              <span style={{marginBottom:"-0.438rem"}} className="slider round"></span>
+                                            </label>
+                                          </td>
+                                        </tr>
+                                          
+                                          {item.showDetails && 
+                                          renderEditForm(item.showDetails,i)}
+                                        </>
+                                        )})}
+                                    
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={formData.offset} rows={formData.perPage} totalRecords={formData.totalRecords} rowsPerPageOptions={[10,20,30]} 
+                                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
+                                  onPageChange={onPageChange}></Paginator>
+                                    
+                          </div>
+                      </div>
                   </div>
-                  <div className="col-6">
-                     <button onClick={newuser} style={add_user ? {fontWeight:"lighter",marginTop:"-3.75rem",float:"right",marginRight:"-31.25rem"}: {visibility:"hidden"}} className="btn btn-outline-danger">+Add New User</button>
-                  </div>
-              </div>
-            </div>
-            <div className="content" >
-              <table className="table" >
-                  <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
-                    <tr>
-                      <th>User Name</th>
-                      <th style={{textAlign:"center"}}>Email ID</th>
-                      <th>Manage Keys</th>
-                      <th>Request Service</th>
-                      <th>Pay Bills</th>
-                      <th>Accept Estimations</th>
-                      <th>Key Authorizers</th>
-                      <th>Users</th>
-                      <th>Audit Trails</th>
-                      <th style={{textAlign:"right"}}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {data.map((item: any,i: any)=>{
-                  return(
-                    <>
-                    <tr key={i}>
-                      <td style={{textAlign:"left"}}>{item.first_name} {item.last_name}</td>
-                      <td >{item.email}</td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.key_finder} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.service_request} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.inv_statements} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.quotes} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.hs_signatory} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.add_user} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                         <input style={{height:"1.375rem",width:"1.375rem", borderRadius:".25em",position:"initial",marginLeft:'0px'}}  type="checkbox"  checked={item.useraccess.audit} className="form-check-input" disabled/>
-                      </td>
-                      <td>
-                      <img style={{cursor:"pointer",marginLeft:'-0.625rem',width:'37%'}} onClick={add_user ? ()=>editdetails(item,i) : permission} alt="edit" src={edit1} />
-                      <label className="switch" style={{marginLeft:"0.313rem"}}>
-                          <input type="checkbox" name="userdisable"  defaultChecked={item.is_active} onChange={add_user ? (e)=>handleCheckboxSlider(e,item): permission} disabled={add_user ? false :true}/>
-                          <span style={{marginBottom:"-0.438rem"}} className="slider round"></span>
-                        </label>
-                      </td>
-                    </tr>
-                       
-                      {item.showDetails && 
-                      renderEditForm(item.showDetails,i)}
-                    </>
-                    )})}
-                    <tr>
-                    <td colSpan={10}>
-                      <Paginator first={offset} rows={limit} totalRecords={totalRecords} rowsPerPageOptions={[10, 20, 30]} 
-                      template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
-                      onPageChange={onPageChange}></Paginator>
-                    </td>
-                  </tr>
-                  </tbody>
-                  
-                </table> 
-                
-                
-                <div>
-            </div>
-          </div>
-         
+                </div>
+            
           </div>
 }
         </>

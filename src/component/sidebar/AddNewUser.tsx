@@ -210,7 +210,7 @@ let AddNewUser = (props:any) =>{
                                 </div>
                                 <div className="col-6">
                                     <span className="detail-created" onClick={handleSubmit} ><img style={{marginRight:"0.5rem",marginLeft:'0.625rem',width:'1rem'}} alt="save" src={save} />Save</span>
-                                    <span className="detail-created" onClick={cancel}>Cancel</span>
+                                    <span className="detail-created" onClick={cancel}>x</span>
                                 </div>
                         </div>
                     </div>

@@ -178,7 +178,7 @@ let Login=()=> {
            "Password should be minimum 8 characters with atleast one uppercase, one lowercase, one special character and one numeric value"
         </ReactTooltip>
         </div>
-        <div >
+        <div className="overview">
             
             <div className="d-flex justify-content-center own-login-container">
             

@@ -246,7 +246,7 @@ class ServiceRequest extends React.Component<{},Props> {
         <>
         <>
             <tr style={{height:"0px"}}>
-                <td colSpan={5}>
+                <td colSpan={5} className="p-0 m-0">
                     <div className="accordian"> 
                         <div className="col-12">
                             <div className="row">
@@ -254,7 +254,7 @@ class ServiceRequest extends React.Component<{},Props> {
                                     <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Dispatches Details</p>
                                 </div>
                                 <div className="col-6">
-                                <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
+                                <span className="detail-created" onClick={()=>this.cancel(id)} >X</span>
                             </div>
                             </div>
                         </div>
@@ -277,56 +277,76 @@ class ServiceRequest extends React.Component<{},Props> {
                     <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={this.state.loading}  height={30} width={5} radius={2} margin={20} />
                 </div> :''}
                 <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-                <div className="upper">
-                    <p style={{padding:"20px"}}><span className='heading'>{this.state.last_name}</span> 
-                    <br></br><span className='heading'>{this.state.cus_no}</span></p>
-                </div>
-                <div className="content">
-                <div className="accordian"> 
-                    <div className="col-12">
+                <section className="overview">
+                    <div className="container-fluid">
                         <div className="row">
-                            <div className="col-6">
-                                <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Request Service</p>
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Request Service</h6>
                             </div>
                         </div>
                     </div>
-                </div>
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                        <th style={{fontWeight:500}} scope="col">Location Name</th>
-                        <th style={{fontWeight:500}} scope="col">Address</th>
-                        <th style={{fontWeight:500,textAlign:"right"}} scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.tableData.map((item: any,i: any)=>{
-                        console.log(item)
-                         return(
-                             <>
-                        <tr key={i}>
-                        <td>{item.location}</td>
-                        <td>{item.address}</td>
-                        <td style={{textAlign:"right",cursor:"pointer"}}>
-                          <img data-toggle="tooltip" data-placement="top" title="View Quotes" alt="eye" style={{cursor:"pointer",width:'1.8rem', marginRight: '1rem'}} src={viewa} onClick={()=>this.details(item.loc_no,i)}/>
-                           <img data-toggle="tooltip" data-placement="top" title="Request" alt="truck" style={{width:'2rem'}} onClick={(localStorage.getItem('service_request')=== 'true')? ()=>this.invoice(item.location ,item.address) : this.noPermission} src={truck}/>
-                        </td>
-                        </tr>
-                        {this.renderEditForm(item.showDetails, item.loc_no)}
+                </section>
+                <section className="filter-pannel">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="filter-pannel-inner d-flex justify-content-between flex-wrap">
+                                    <div>
+                                        <h6>{this.state.last_name}</h6>
+                                        <h6>{this.state.cus_no}</h6>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        </>
-                        )})}
-                        <tr>
-                            <td colSpan={10}>
-                            <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
-                            template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
-                            onPageChange={this.onPageChange}></Paginator>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                </section>
+    
+                <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Request services
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 estimates-table">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      <th scope="col">Location Name</th>
+                                      <th className="text-center" scope="col">Address</th>
+                                      <th style={{textAlign:"right"}} className="pr-4" scope="col">Actions</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                    {this.state.tableData.map((item: any,i: any)=>{
+                                    return(
+                                        <>
+                                    <tr key={i}>
+                                    <td className="primary-text" onClick={()=>this.details(item.loc_no,i)}>{item.location}</td>
+                                    <td className="text-center">{item.address}</td>
+                                    <td className="text-right general-btn"  >
+                                        <button className="btn blue-btn"  onClick={(localStorage.getItem('service_request')=== 'true')? ()=>this.invoice(item.location ,item.address) : this.noPermission}>Request</button>
+                                    </td>
+                                    </tr>
+                                    {this.renderEditForm(item.showDetails, item.loc_no)}
+                                    
+                                    </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
+                                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
+                                  onPageChange={this.onPageChange}></Paginator>
+                                  
+                          </div>
+                      </div>
+                  </div>
                 </div>
-            </div>
+              </div>
             </>
         );
     }

@@ -152,7 +152,7 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
               </p>
             </div>
           </div>
-          <table className="table" style={{backgroundColor:"#fff"}}>
+          <table className="table p-0 m-0" style={{backgroundColor:"#fff"}}>
             <thead style={{ color: "#fff",backgroundColor:"#0D93C9" }}>
               <tr>
                 <th data-visible="true" >Description</th>
@@ -284,15 +284,14 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
             }
           <div>
           <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-          <table className="table table-striped" >
-            <thead>
+          <table className="table m-0" >
+            <thead className="thead-light">
               <tr>
                 {/* <th style={{fontWeight:500}} scope="col">S.No.</th> */}
-                <th style={{fontWeight:500}} scope="col">Quote Number</th>
-                <th style={{fontWeight:500}} scope="col">Quote Date</th>
-                <th style={{fontWeight:500}} scope="col">Sales Person</th>
-                <th style={{fontWeight:500}} scope="col">Amount</th>
-                <th style={{fontWeight:500,textAlign:"right"}} scope="col">Action</th>
+                <th  scope="col">Quote Number</th>
+                <th  scope="col">Quote Date</th>
+                <th  scope="col">Sales Person</th>
+                <th className="text-right" scope="col">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -301,13 +300,10 @@ class QuotationDetails extends React.Component<{locationNo:any,load:any,loadt:an
                 return(
               <tr key={i} >
                 {/* <td scope="row">{i+1}</td> */}
-                <td>{item.quote}</td>
+                <td className="primary-text" onClick={()=>this.invoice(item.quote)}>{item.quote}</td>
                 <td>{date}</td>
                 <td>{item.sales_person}</td>
                 <td>{item.amount}</td>
-                <td style={{textAlign:"right"}}>
-                    <img data-toggle="tooltip" data-placement="top" title="View Quote" alt="eye" style={{marginLeft:"1rem",cursor:"pointer",width:'1.8rem'}} onClick={()=>this.invoice(item.quote)} src={viewa}/>
-                </td>
               </tr>
               )})}
             </tbody>

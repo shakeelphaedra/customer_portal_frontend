@@ -156,13 +156,24 @@ class ViewKeysGroup extends React.Component<{},Props> {
       this.setState({isSelected: null})
     }
   }
+  
+  cancel(id:any) {
+    debugger
+    const updatedData = this.state.data.map((obj:any,i:number)=>{
+        if(i===id){
+          obj.showDetails = false;
+        }
+        return {...obj}
+    })
+    this.setState({data: updatedData});
+   }
 
   renderEditForm=(show:any,id:any)=>{
     if(show){
       return(
         <>
           <tr style={{height:"0px"}}>
-              <td colSpan={7}>
+              <td colSpan={7} className="m-0 p-0">
               <div className="accordian"> 
                     <div className="col-12">
                         <div className="row">
@@ -170,7 +181,9 @@ class ViewKeysGroup extends React.Component<{},Props> {
                                 <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Key Holder Informations</p>
                             </div>
                             <div className="col-6">
-                                </div>
+                            <span className="detail-created" onClick={()=>this.cancel(id)} >x</span>
+                               
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -524,60 +537,86 @@ class ViewKeysGroup extends React.Component<{},Props> {
           </div> :''
             }
             <Toast ref={this.toast} />
-              <div className="upper1" >
-                <div className="row col-md-12">
-                    <div  className="col-6">
-                        <p><span style={{color:"#009DD0",fontSize:"1.5rem"}}><span style={{fontWeight:"bold", marginRight:".6rem"}}>Welcome</span>{this.state.currentuser.first_name} {this.state.currentuser.last_name}</span></p>
-                        <p> Your last log in was on :  <strong>{lastLoginDate}</strong></p>
-                        <p>Last Updated:  <strong>{lastUpdatedDate}</strong></p>
-                    </div> 
-                    <div className="col-6 align-items-end justify-content-end d-flex">
-                      <button onClick={this.handleNewGroup} style={this.state.add_group ? {fontWeight:"lighter"}: {visibility:"hidden"}} className="btn btn-outline-danger">+Add New Group</button>
+            <section className="overview">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Manage Key Groups</h6>
+                            </div>
+                        </div>
                     </div>
-                </div>
-              </div>
-              <div className="content" >
-            <table className="table" style={{backgroundColor:"#fff"}}>
-              <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
-                <tr>
-                  <th data-visible="true" >Group Name</th>
-                  <th>Tenant</th>
-                  <th>First/Last Name</th>
-                  <th>Email</th>
-                  <th>Cell No</th>
-                  <th>Issue Date</th>
-                  <th style={{textAlign:"right"}}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-              {this.state.data.map((item: any,i: any)=>{
-              return(
-                <>
-                <tr key={i}>
-                  <td><span onClick={()=>this.details(item,i)} style={{cursor:"pointer",color:"#009ED6",textDecoration:"underline"}}>{item.name}</span></td>
-                  <td>{item.sequence.length > 0 ? item.sequence[0].tenant_location : ''}</td>
-                  <td>{item.sequence.length > 0 ? item.sequence[0].key_holder : ''}</td>
-                  <td>{item.sequence.length > 0 ? item.sequence[0].email : ''}</td>
-                  <td>{item.sequence.length > 0 ? item.sequence[0].phone : ''}</td>
-                  <td>{item.sequence.length > 0 ? (new Date(item.sequence[0].date_issued)).toLocaleDateString("fr-CA") : ''}</td>
+                </section>
+                <section className="filter-pannel">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="filter-pannel-inner d-flex justify-content-between flex-wrap">
+                                    <div>
+                                        <h6>Welcome {this.state.currentuser.first_name} {this.state.currentuser.last_name}</h6>
+                                        <span className="last-login">Last Login: {lastLoginDate}</span>
+                                    </div>
+                                    <div className="mb-2">
+                                        <button onClick={this.handleNewGroup} className="btn add-group-btn">Add New Group</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                  <td style={{textAlign:"right"}}>
-                    <img alt="viewkeys" style={{marginLeft:"0.6rem",width:'0.8rem'}} src={edit1} onClick={() => this.editGroup(item.id)}/>
+                </section>
+                <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Key Groups
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 ">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      <th data-visible="true" >Group Name</th>
+                                      <th>Tenant</th>
+                                      <th>First/Last Name</th>
+                                      <th>Email</th>
+                                      <th>Cell No</th>
+                                      <th>Issue Date</th>
+                                      <th className="text-center">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {this.state.data.map((item: any,i: any)=>{
+                                    return(
+                                      <>
+                                      <tr key={i}>
+                                        <td className="primary-text"><span onClick={()=>this.details(item,i)} >{item.name}</span></td>
+                                        <td>{item.sequence.length > 0 ? item.sequence[0].tenant_location : ''}</td>
+                                        <td>{item.sequence.length > 0 ? item.sequence[0].key_holder : ''}</td>
+                                        <td>{item.sequence.length > 0 ? item.sequence[0].email : ''}</td>
+                                        <td>{item.sequence.length > 0 ? item.sequence[0].phone : ''}</td>
+                                        <td>{item.sequence.length > 0 ? (new Date(item.sequence[0].date_issued)).toLocaleDateString("fr-CA") : ''}</td>
 
-                    <img alt="delete" style={{marginLeft:"0.938rem",cursor:"pointer",width:'0.8rem'}} onClick={() =>this.deleteGroup(item.id)} src={removeIcon}/>
-                  </td>
-                </tr>
-                {this.renderEditForm(item.showDetails,item.id)}
-                </>
-                )})}
-              </tbody>
-              </table>
-              <Paginator first={this.state.offset} rows={this.state.limit} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
+                                        <td className="text-right general-btn">
+                                            <button className="btn blue-btn mb-1" onClick={() => this.editGroup(item.id)}>Update</button>
+                                            <button className="btn red-btn mb-1" onClick={() =>this.deleteGroup(item.id)}>Delete</button>
+                                        </td>
+                                      </tr>
+                                      {this.renderEditForm(item.showDetails,item.id)}
+                                      </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={this.state.offset} rows={this.state.limit} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
                     template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
                     onPageChange={this.onPageChange}></Paginator>
-                    
-              </div>
-            </div>
+                   
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                </div>
             </div>
           </>
       );

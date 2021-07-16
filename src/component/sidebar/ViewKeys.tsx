@@ -162,7 +162,6 @@ class ViewKeys extends React.Component<{},Props> {
         this.setState({currentuser:response.data.results.current_user});
         this.setState({totalRecords:response.data.count});
         this.setState({files: response.data.results.file_numbers })
-        debugger
         this.setState({file:response.data.results.file_numbers.map((item: any)=>{ 
           return (
           { label: item.file_number + " " +(item.location ? item.location : ''),  value: item.id}
@@ -217,7 +216,7 @@ class ViewKeys extends React.Component<{},Props> {
   }
    
   handleChange = (e:any) => {
-    var item = this.state.files.find((i: any)=> i.id == e.value)
+    var item = this.state.files.find((i: any)=> i.id == e.target.value)
     this.fetchedData(null,null,item.file_number);
     this.setState({isSelected:item});
   }
@@ -245,7 +244,7 @@ class ViewKeys extends React.Component<{},Props> {
       return(
         <>
           <tr style={{height:"0px"}}>
-              <td colSpan={4}>
+              <td colSpan={4} className="p-0 m-0">
               <div className="accordian"> 
                     <div className="col-12">
                         <div className="row">
@@ -273,21 +272,16 @@ class ViewKeys extends React.Component<{},Props> {
        <div className="row">
           <div className="col-2" >
 
-            { 
-              this.state.door_compromised > 0 ?
-                 <> <img alt="warning" src={warning}/><br></br><span>{this.state.door_compromised} Door Compromised</span></>
-              : ''
-            }
             </div>
 
             <div className="col-10">
               <button style={{marginTop:"1.25rem",marginLeft:"0.938rem", height:"3.875rem",width:"9.063rem"}}  type="button" className="btn btn-outline-info"><img style={{marginTop:"0.438rem",marginRight:"0.5rem",width:'32%'}} alt="schedule" src={schedule}/>Schedule<span style={{marginTop:"-1.125rem",marginRight:"-2.25rem",display:"block"}}> Service</span></button>
-              <a href={`${baseURL}/api/kdfinder/csv/key-qty/${this.state.currentuser.id}/${this.state.isSelected.file_number}/`} style={{marginTop:"1.25rem",marginLeft:"0.938rem",height:"3.875rem",width:"10.25rem"}} 
+              <a style={{marginTop:"1.25rem",marginLeft:"0.938rem",height:"3.875rem",width:"10.25rem"}} 
                     className="btn btn-outline-success">
                     <img style={{marginTop:"0.438rem",marginRight:"0.5rem",marginLeft:"-.25rem",width:'20%'}} alt="csv" src={csv}/>
                     Export System <span style={{marginTop:"-1.125rem",marginRight:"2.25rem",display:"block"}}>CSV </span>
               </a>
-              <a href={`${baseURL}/api/kdfinder/pdf/key-qty/${this.state.currentuser.id}/${this.state.isSelected.file_number}/`} style={{marginTop:"1.25rem",marginLeft:"0.938rem",marginRight:"-3.125rem",height:"3.875rem",width:"11.813rem"}} type="button" className="btn btn-outline-danger"><img style={{marginTop:"0.438rem",marginRight:"1px",marginLeft:"-1px",width:'17%'}} alt="pdf" src={image}/> Download System<span style={{marginTop:"-1.125rem",marginRight:"3.875rem",display:"block"}}> PDF</span></a>                   
+              <a  style={{marginTop:"1.25rem",marginLeft:"0.938rem",marginRight:"-3.125rem",height:"3.875rem",width:"11.813rem"}} type="button" className="btn btn-outline-danger"><img style={{marginTop:"0.438rem",marginRight:"1px",marginLeft:"-1px",width:'17%'}} alt="pdf" src={image}/> Download System<span style={{marginTop:"-1.125rem",marginRight:"3.875rem",display:"block"}}> PDF</span></a>                   
             </div>
           <div className="col-md-12 aling-items-end justify-content-end d-flex mt-2">
             {this.renderkeys()}
@@ -338,7 +332,7 @@ class ViewKeys extends React.Component<{},Props> {
     if(this.state.edit){
       return(
         <>
-       <div >
+       <div className="p-0">
               <img alt="broken" style={{width:'1rem'}} src={brokenkey}/><span style={{marginLeft:"0.75rem",color:"#0D93C9"}}>Broken key</span>
               <img alt="questionmark" style={{marginLeft:"1rem",width:'0.6rem'}} src={questionmark}/><span style={{marginLeft:"0.75rem",marginRight:"2.5rem",color:"#FF6B6B"}}>Key Lost</span>
         </div>
@@ -405,57 +399,133 @@ closeModal = () =>{
           }
           <Toast ref={this.toast} />
                 <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-            <div className="upper1" >
-              <div className="row col-md-12">
-                  <div  className="col-4">
-                      <p><span style={{color:"#009DD0",fontSize:"1.5rem"}}><span style={{fontWeight:"bold", marginRight:".6rem"}}>Welcome</span>{this.state.currentuser.first_name} {this.state.currentuser.last_name}</span></p>
-                      <p> Your last log in was on :  <strong>{lastLoginDate}</strong></p>
-                      <p>Last Updated:  <strong>{lastUpdatedDate}</strong></p>
-                  </div>   
-                  <div className="col-8" >
-                    {this.renderEdit()}
-                    
-                  </div> 
-              </div>
+        <section className="overview">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <h6 className="over-text">Manage Keys</h6>
+                    </div>
+                </div>
             </div>
-            <div className="content" >
-          <table className="table" style={{backgroundColor:"#fff"}}>
-            <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
-              <tr>
-                <th data-visible="true" >Key ID Stamp</th>
-                <th>Key Description</th>
-                <th>QTY Cut</th>
-                <th style={{textAlign:"right"}}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            {this.state.data.map((item: any,i: any)=>{
-             return(
-               <>
-              <tr key={i}>
-                <td><span onClick={()=>this.details(item,i)} style={{cursor:"pointer",color:"#009ED6",textDecoration:"underline"}}>{item.key_id}</span></td>
-                <td>{item.key_description}</td>
-                <td>{item.quantity}</td>
-                <td style={{textAlign:"right"}}>
-                  <img alt="keyrequest" style={{marginLeft:"0.938rem",cursor:"pointer",width:'1.5rem'}} onClick={() => this.request(item)} src={shopping}/>
-                  {<a href={`${baseURL}/api/kdfinder/csv/key-sequence/${this.state.currentuser.id}/${this.state.isSelected.file_number}/${item.id}/`} ><img alt="csv1" style={{marginLeft:"0.938rem",cursor:"pointer",width:'1.3rem'}} src={csv1}/></a>}
-                  {<a href={`${baseURL}/api/kdfinder/pdf/key-sequence/${this.state.currentuser.id}/${this.state.isSelected.file_number}/${item.id}/`} ><img alt="pdf1" style={{marginLeft:"0.938rem",cursor:"pointer",width:'1.3rem'}} src={image}/></a>}
+        </section>
+        <section className="filter-pannel">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className="filter-pannel-inner ">
+                            <div className="filter-inner-header d-flex justify-content-between flex-wrap">
+                                <div>
+                                    <h6>{this.state.currentuser.first_name} {this.state.currentuser.last_name}</h6>
+                                    <h6>Your last log in was on : {lastLoginDate}</h6>
+                                </div>
+                                <div className="form-group mb-2 w-40">
+                                  <div className="d-flex">
+                                    <div className="mr-4 mt-2 text-center">
+                                    { 
+                                      this.state.edit && this.state.door_compromised > 0 ?
+                                        <> <img className="mr-4" style={{width: '30px', padding: 0,marginBottom: '4px'}} alt="warning" src={warning}/><br></br><span style={{fontWeight: 900,
+                                          fontSize: '13px',
+                                          color: 'red'}}>{this.state.door_compromised} Door Compromised</span></>
+                                      : ''
+                                    }
+                                    </div>
+                                      <div>
+                                        <label >Filter By:</label>
+                                        <select className="form-control filter-form-control"
+                                          onChange={this.handleChange} 
+                                          id="exampleFormControlSelect1">
+                                            {this.state.file.map((option: any)=>(
+                                              <option value={option.value} selected={this.state.isSelected == option.value}>{option.label}</option>
+                                            ))}
+                                        </select>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-md-6">
+                                                      
+                                <div className="col-md-12 row d-flex mt-2">
+                                  
+                                  {this.renderkeys()}
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                              <div className="filter-pannel-btn d-flex justify-content-end flex-wrap mt-3">
+                                <button className="btn mb-1">Schedule Service</button>
+                                <button className="btn ml-2 mb-1" 
+                                  onClick={() => window.open(`${baseURL}/api/kdfinder/csv/key-qty/${this.state.currentuser.id}/${this.state.isSelected.file_number}/`, '_blank')} 
+                                  >Export System CSV</button>
+                                <button className="btn ml-2 mb-1"
+                                 onClick={() => window.open(`${baseURL}/api/kdfinder/pdf/key-qty/${this.state.currentuser.id}/${this.state.isSelected.file_number}/`, '_blank')}
+                                >Download System PDF</button>
+                            </div>
+                              </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
 
-                </td>
-              </tr>
+        </section>
+        <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Keys
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 manage-key-table">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      <th data-visible="true" >Key ID Stamp</th>
+                                      <th>Key Description</th>
+                                      <th className="text-center">QTY Cut</th>
+                                      <th className="text-center pr-4">Actions</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                    {this.state.data.map((item: any,i: any)=>{
+                                    return(
+                                        <>
+                                    <tr key={i}>
+                                    <td className="primary-text"><span onClick={()=>this.details(item,i)} >{item.key_id}</span></td>
+                                    <td>{item.key_description}</td>
+                                    <td className="text-center">{item.quantity}</td>
+                                    <td className="text-right general-btn">
+                                      
+                                        <button onClick={() => this.request(item)} className="btn blue-btn manage-btn mb-1">View Cart</button>
+                                        <button
+                                          onClick={() => window.open(`${baseURL}/api/kdfinder/csv/key-sequence/${this.state.currentuser.id}/${this.state.isSelected.file_number}/${item.id}/`, '_blank')} 
+                                          className="btn blue-btn manage-btn mb-1">Export CSV</button>
+                                        <button 
+                                          onClick={() => window.open(`${baseURL}/api/kdfinder/pdf/key-sequence/${this.state.currentuser.id}/${this.state.isSelected.file_number}/${item.id}/`, '_blank')} 
+                                          className="btn blue-btn manage-btn mb-1">Download PDF</button>
+
+                                    </td>
+                                  
+                                    </tr>
+                                    {this.renderEditForm(item.showDetails,i)}
+                                    
+                                    </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={this.state.offset} rows={this.state.limit} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
+                                template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
+                                onPageChange={this.onPageChange}></Paginator>
+                            
+                          </div>
+                      </div>
+                  </div>
+                </div>
              
-                   {this.renderEditForm(item.showDetails,i)}
-                
-              </>
-              )})}
-            </tbody>
-            </table>
-            <Paginator first={this.state.offset} rows={this.state.limit} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10, 20, 30]} 
-                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
-                  onPageChange={this.onPageChange}></Paginator>
-                  
-            </div>
-          </div>
+                     </div>
         </>
       );
     }

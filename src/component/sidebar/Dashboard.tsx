@@ -23,15 +23,12 @@ import NotFound from "../NotFound";
 
 const Dash = () => {
     return (
-        <>
-            <Container fluid>
-                <Row style={{backgroundColor:"#ECECEC"}}> 
-                    <div id="sidebar-wrapper">
-                        <Sidebarr />
-                    </div>
-                    <div id="page-content-wrapper">
-                        <main>
-                            <div className="row" style={{height:'calc(100vh - 7rem)',marginTop:".7rem", overflowX:"hidden"}}>
+        <>		
+        <section className="mainblock">
+            <Sidebarr />
+
+			<section className="overview">
+				<div className="container-fluid">
                                 <Switch>
                                     <Route path='/home/companydetails' component={CompanyDetails} />
                                     <Route path='/home/userinformation' component={UserInformation} />
@@ -50,13 +47,9 @@ const Dash = () => {
                                     <Route path='/home/systemnumber' component={SystemNumber} />
                                     <Route path='*' component={NotFound} />
                                 </Switch>
-                            </div>
-           
-                        </main>
-                    </div>
-                </Row>
-
-            </Container>
+                        </div>
+                    </section>
+            </section>
         </>
     );
 };

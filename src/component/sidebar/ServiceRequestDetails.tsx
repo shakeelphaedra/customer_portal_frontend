@@ -150,8 +150,8 @@ class ServiceRequestDetails extends React.Component<{locationNo:any,load:any,loa
               </p>
             </div>
           </div>
-          <table className="table" style={{backgroundColor:"#fff"}}>
-            <thead style={{ color: "#fff",backgroundColor:"#0D93C9" }}>
+          <table className="table m-0" style={{backgroundColor:"#fff"}}>
+            <thead style={{ color: "#fff",backgroundColor:"#0D93C9" }} className="thead-light">
               <tr>
                   <th>Name</th>
                 <th data-visible="true" >Description</th>
@@ -280,16 +280,15 @@ class ServiceRequestDetails extends React.Component<{locationNo:any,load:any,loa
             }
           <div>
           <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-          <table className="table table-striped" >
-            <thead>
+          <table className="table table-striped m-0" >
+            <thead className="thead-light">
               <tr>
                 {/* <th style={{fontWeight:500}} scope="col">S.No.</th> */}
-                <th style={{fontWeight:500}} scope="col">Dispatch number</th>
-                <th style={{fontWeight:500}} scope="col">Dispatch Entry Date</th>
-                <th style={{fontWeight:500}} scope="col">Customer PO Number</th>
-                <th style={{fontWeight:500}} scope="col">Dispatcher Name</th>
-                <th style={{fontWeight:500}} scope="col">Requester</th>
-                <th style={{fontWeight:500,textAlign:"right"}} scope="col">Actions</th>
+                <th  scope="col">Dispatch number</th>
+                <th  scope="col">Dispatch Entry Date</th>
+                <th  scope="col">Customer PO Number</th>
+                <th  scope="col">Dispatcher Name</th>
+                <th  scope="col">Requester</th>
               </tr>
             </thead>
             <tbody>
@@ -298,14 +297,11 @@ class ServiceRequestDetails extends React.Component<{locationNo:any,load:any,loa
                 return(
               <tr key={i} >
                 {/* <td scope="row">{i+1}</td> */}
-                <td>{item.dispatch_no}</td>
+                <td className="primary-text" onClick={()=>this.dispatch(item.dispatch_no)}>{item.dispatch_no}</td>
                 <td>{date}</td>
                 <td>{item.po_no}</td>
                 <td>{item.dispatcher_name}</td>
                 <td>{item.requester}</td>
-                <td style={{textAlign:"right"}}>
-                    <img data-toggle="tooltip" data-placement="top" title="View Quote" alt="eye" style={{marginRight:"1rem",cursor:"pointer",width:'1.8rem'}} onClick={()=>this.dispatch(item.dispatch_no)} src={viewa}/>
-                </td>
               </tr>
               )})}
             </tbody>

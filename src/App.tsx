@@ -13,15 +13,14 @@ import Home from './component/header/Home';
 import Forget from './component/login/Forget';
 import ChangePassword from './component/login/ChangePassword';
 import ResetPassword from './component/login/ResetPassword';
-import Header from './component/header/Header';
 import NotFound from './component/NotFound';
 import { useEffect } from 'react';
 import KeyAuditConfirmation from './component/KeyAuditConfirmation/KeyAuditConfirmation';
+import Header from './component/header/Header';
 
 require('dotenv').config()
 function App(props:any) {
   const history = useHistory();
-
   useEffect(()=>{
      console.log(window);
   },[])
@@ -34,34 +33,19 @@ function App(props:any) {
   }
 
   return (
-    <div className="App">
-      <div className='row'>
-        <div className='col-2' >
-           <img style={{width:'10.7rem',float:'left',cursor:'pointer'}} alt="locks" src={logolocks}  onClick={localStorage.getItem("access_token")? icon : login} />
-        </div>
-        <div className='col-6 align-items-center m-0 justify-content-end d-flex'>
-          <p style={{fontStyle:'italic',textAlign:'right', margin: 0}}>Thank you for supporting Small Business</p>
-        </div>
-        <div className='col-2  align-items-center justify-content-center d-flex' style={{textAlign:'left'}}>
-          <img style={{width:'1.55rem',margin:0}} alt="heart" src={heart} />
-          <img style={{width:'1.55rem',margin:0}} alt="door" src={door} />
-          <img style={{width:'1.55rem',margin:0}} alt="locks" src={key} />
-          
-        </div>
-        <div className='col-2 align-items-center justify-content-center d-flex'>
-            <p style={{fontSize:'1rem',textAlign:'left', margin: 0,fontStyle:'italic'}}>#YYC Local</p>
-          </div>
-      </div>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/KeyAudit/:id" component={KeyAuditConfirmation} />
-          <Route path="/home" component={Home} />
-          {localStorage.getItem("access_token")?<Header />: history.push('/')}
-          <Route path="/createaccount" component={CreateAccount} />
-          <Route path='/forgot' component={Forget}/>
-          <Route path='/changepassword' component={ChangePassword}/>
-          <Route path='/resetpassword' component={ResetPassword}/>
-        <Footer />
-        <Route path='*' component={NotFound} />
+    <div className="main-page">
+        <Header/>
+              <Route exact path="/" component={Login} />
+              <Route exact path="/KeyAudit/:id" component={KeyAuditConfirmation} />
+              <Route path="/home" component={Home} />
+              <Route path="/createaccount" component={CreateAccount} />
+              <Route path='/forgot' component={Forget}/>
+              <Route path='/changepassword' component={ChangePassword}/>
+              <Route path='/resetpassword' component={ResetPassword}/>
+        
+        <footer className="footer">
+          <h6>© 2020 Calgary Lock & Safe. All Rights Reserved. Some logos are copyright of their respective holders. Some images courtesy of Freepik.com.</h6>
+        </footer>
     </div>
   );
 }

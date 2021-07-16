@@ -1,6 +1,506 @@
-.App {
-  text-align: center;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400&display=swap');
+
+body{
+	font-family: 'Montserrat', sans-serif !important;
+	background: #EBEBEA !important;
 }
+ul{
+	padding: 0;
+	margin: 0;
+}
+ul li{
+	list-style: none;
+}
+img{
+	max-width: 100%;
+}
+.mainblock {
+	display: flex;
+}
+.overview {
+	flex: 1;
+	overflow: hidden;
+}
+.sidebar-left-main {
+	background-color: #096B9A;
+}
+.sidebar-left {
+	width: 260px;
+	padding: 25px 0;
+	-moz-transition: .3s linear;
+	-webkit-transition: .3s ease-out;
+	transition: .3s linear;
+	position: relative;
+	z-index: 555;
+	background-color: #096B9A;
+	height: calc(100vh - 150px);
+}
+.sidebar-left ul {
+		overflow-y: auto;
+}
+.sidebar-left ul li a {
+	color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	text-decoration: none !important;
+	margin-bottom: 2px;
+}
+.sidebar-left ul li ul {
+	padding: 0 15px;
+	height: 0;
+	opacity: 0;
+}
+.sidebar-left ul li.active ul {
+	opacity: 1;
+	height: auto;
+}
+.sidebar-left ul>li.active>a,
+.sidebar-left ul>li>a:hover {
+	background-color: #094D6E;
+}
+.action-btn {
+	position: absolute;
+	right: -40px;
+	background-color: #096B9A;
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff !important;
+	text-decoration: none !important;
+	width: 26px;
+	height: 26px;
+	top: 4px;
+	opacity: 0;
+	-moz-transition: .3s linear;
+	-webkit-transition: .3s ease-out;
+	transition: .3s linear;
+	font-size: 12px;
+	border-radius: 50%;
+}
+.overly {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #0000005e;
+	z-index: 55;
+	opacity: 0;
+	pointer-events: none;
+		-moz-transition: .3s linear;
+	-webkit-transition: .3s ease-out;
+	transition: .3s linear;
+}
+.fixedheight {
+	overflow: hidden !important;
+}
+
+@media only screen and (max-width: 1024px){
+	.sidebar-left {
+		transform: translateX(-260px);
+		position: absolute;
+		border-radius: 2px !important;
+	}
+	.sidebar-left > ul {
+		overflow-y: auto;
+		max-height: 495px;
+	}
+	.action-btn {
+		opacity: 1;
+	}
+	.sidebar-left-main.open-sidebar .sidebar-left {
+		transform: translateX(15px);
+	}
+	.sidebar-left-main.open-sidebar .overly {
+		opacity: 1;
+	}
+	.sidebar-left-main.open-sidebar .action-btn i:before {
+		content: "\f00d";
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #096B9A !important;
+}
+.header .userInfo {
+	position: relative;
+	padding-right: 60px !important;
+}
+.header .userImg {
+	height: 36px;
+	width: 36px;
+	background-color: #000;
+	display: inline-block;
+	position: absolute;
+	right: 15px;
+	top: 0;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	justify-content: center;
+}
+.header .navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: absolute;
+    top: 65px;
+    border: 0;
+    border-radius: 0;
+    right: 15px;
+    box-shadow: none !important;
+}
+.header .userImg img {
+	object-fit: cover;
+	height: 36px;
+	width: 36px;
+}
+.main-header {
+	background-color: #ffffff;
+	box-shadow: rgb(0 0 0 / 16%) 2px 2px 8px;
+}
+.main-header .bg-light {
+	background-color: #ffffff !important;
+}
+.main-page {
+	height: 100vh;
+}
+/* overview */
+.overview .over-text {
+	font-size: 20px;
+	color: #000000;
+	padding: 30px 0;
+}
+.overview .customer-number {
+	background-color: #ffffff !important;
+	padding: 20px;
+	height: 140px;
+}
+.overview .customer-number p {
+	color: #000000;
+	font-size: 16px;
+	font-weight: 600;
+}
+.overview .customer-number .term-color {
+	color: #A7A7A7;
+	font-size: 16px;
+	font-weight: 600;
+	
+}
+.overview .account-blnc {
+	background-color: #096B9A;
+	font-size: 16px;
+	text-align: center !important;
+	width: 100%;
+	color: #ffffff;
+	align-items: center;
+	height: 140px;
+	position: relative;
+	
+}
+.overview .account-blnc .acount-blnc-inner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 138px;
+	margin: auto;
+	line-height: 1.7;
+}
+.overview .account-blnc .acount-price {
+	font-size: 18px;
+	font-weight: 600;
+}
+.overview-pannel-cal .overview-pannel-header {
+	background-color: #096B9A;
+	color: #ffffff;
+	font-size: 16px;
+	text-align: center;
+	margin-top: 20px;
+	padding: 17px 0;
+
+}
+.overview-pannel-cal .overview-pannel-body {
+	background-color: #ffffff;
+}
+.overview-pannel-cal .overview-pannel-body table .thead-light th {
+	background-color: #F9F9F9 !important;
+	color: #000000;
+	font-size: 14px;
+	font-weight:900;
+	border-bottom: 1px solid #EBEBEA;
+	vertical-align: middle !important;
+}
+.thead-light th {
+	background-color: #F9F9F9 !important;
+	color: #000000;
+	font-size: 14px;
+	font-weight:900;
+	border-bottom: 1px solid #EBEBEA;
+	vertical-align: middle !important;
+}
+.overview-pannel-cal .overview-pannel-body table .general-btn button {
+	text-decoration: none;
+	color: #ffffff;
+	font-size: 12px;
+	padding: 8px 10px;
+	width: 99px;
+	height: 33px;
+	border-radius: 5px;
+	text-align: center;
+	cursor: pointer;
+	
+}
+.overview-pannel-cal .overview-pannel-body table .general-btn .red-btn {
+	background-color: #DB2728;
+	
+}
+.overview-pannel-cal .overview-pannel-body table .general-btn .blue-btn {
+	background-color: #009ED6;
+}
+.overview-pannel-cal .overview-pannel-body table tbody tr td {
+	font-size: 12px;
+	color: #000000;
+	font-weight: 600;
+	border-bottom: 2px solid #EBEBEA;
+	padding: 20px 13px;
+	align-items: center;
+	vertical-align: middle !important;
+}
+.overview-pannel-cal .overview-pannel-body table tbody tr .primary-text {
+	color: #009ED6;
+}
+.footer {
+	background: #000000 0% 0% no-repeat padding-box;
+	padding: 10px 0;
+}
+.footer h6 {
+	font-size: 11px;
+	color: #FFFFFF;
+	margin-bottom: 0;
+	text-align: center;
+}
+
+
+/* check box start */
+.container {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 20px;
+	width: 20px;
+	border-radius: 6px;
+	border: 1px solid #000000;
+}
+
+  /* On mouse-over, add a grey background color
+  .container:hover input ~ .checkmark {
+	background-color: #ccc;
+	} */
+
+	/* When the checkbox is checked, add a blue background */
+	.container input:checked ~ .checkmark {
+
+		border: 1px solid #009ED6 !important;
+	}
+
+	/* Create the checkmark/indicator (hidden when not checked) */
+	.checkmark:after {
+		content: "";
+		position: absolute;
+		display: none;
+	}
+
+	/* Show the checkmark when checked */
+	.container input:checked ~ .checkmark:after {
+		display: block;
+	}
+
+	/* Style the checkmark/indicator */
+	.container .checkmark:after {
+		left: 6px;
+		top: 3px;
+		width: 5px;
+		height: 10px;
+		border: solid #009ED6;
+		border-width: 0 3px 3px 0;
+		-webkit-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		transform: rotate(45deg);
+	}
+
+	/* checkbox end */
+	.overview-pannel-cal .overview-pannel-footer {
+		background-color: #ffffff;
+		padding: 40px 13px;
+		align-items: center;
+	}
+	.main-pagination {
+		background-color: #ffffff;
+		padding: 40px;
+	}
+	.overview-pannel-footer .pagination-right ul li {
+		margin: 4px;
+		border: none;
+	}
+	.overview-pannel-footer .pagination-right ul li a {
+		border-radius: 5px !important;
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+		color: #ffffff;
+		background-color: #78cce9;
+		font-size: 12px;
+		border: none;
+
+	}
+	.overview-pannel-footer .pagination-right ul li a:hover {
+		background-color: #009ED6;
+	}
+	.overview-pannel-footer .pagination-middle p {
+		font-size: 12px;
+		color: #A7A7A7;
+	}
+	.overview-pannel-footer .pagination-left select option,
+	.overview-pannel-footer .pagination-left span {
+		color: #A7A7A7;
+		font-size: 12px;
+	}
+	.overview-pannel-footer .pagination-left .form-control {
+		height: 30px !important;
+		width: 60px;
+		padding-left: 5px;
+		padding-top: 4px;
+		color: #A7A7A7;
+		font-size: 12px;
+	}
+	/* ============estimates ===============*/
+
+	.filter-pannel .filter-pannel-inner {
+		background-color: #ffffff;
+		width: 100%;
+		min-height: 150px;
+		padding: 25px;
+	}
+	.filter-pannel .filter-pannel-inner .filter-form-control {
+		width: 250px;
+	}
+	.filter-pannel .filter-pannel-inner h6 {
+		color: #009ED6;
+		font-size: 16px;
+	}
+	.filter-pannel .filter-pannel-inner label {
+		font-size: 12px;
+		color: #000000;
+		font-weight: 600;
+
+	}
+	.overview-pannel-body .estimates-table thead tr th,
+	.overview-pannel-body .estimates-table tbody tr td {
+		width: 33.33%;
+	}
+	/* ============estimates ===============*/
+
+	/* ============audit-trail ===============*/
+	.filter-pannel-btn .btn {
+		background-color: #009ED6;
+		color: #FFFFFF;
+		font-size: 12px;
+		cursor: pointer;
+	}
+	.filter-pannel .form-control {
+		font-size: 12px;
+		height: 39px;
+		color: #CCCCCC;
+	}
+	/* ============audit-trail ===============*/
+	.add-group-btn {
+		position: absolute !important;
+		bottom: 20px !important;
+		right: 30px !important;
+		background-color: #009ED6 !important;
+		color: #FFFFFF !important;
+		font-size: 12px !important;
+		cursor: pointer;
+		height: 34px !important;
+		padding: 5px 20px !important;
+		text-align: center !important;
+	}
+	.filter-pannel-inner .last-login {
+		font-size: 12px;
+		color: #009ED6;
+	}
+	.overview-pannel-body .manage-key-table thead tr th,
+	.overview-pannel-body .manage-key-table tbody tr td {
+		width: 25%;
+	}
+	.overview-pannel-cal .overview-pannel-body table .general-btn .manage-btn {
+		width: auto;
+	}
+	@media only screen and (max-width: 767px){
+		.header .userInfo {
+			padding-right: 15px !important;
+		}
+		.header .userImg {
+			display: none;
+		}
+		.navbar-brand img {
+			width: 160px;
+		}
+		.header .navbar-expand-lg .navbar-nav .dropdown-menu {
+			left: inherit;
+			top: 58px;
+		}
+		.overview-pannel-cal .overview-pannel-footer{
+			flex-direction: column;
+		}
+
+
+	}

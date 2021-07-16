@@ -346,7 +346,7 @@ class Accounting extends React.Component<{},Props> {
               return(
                 <>
                 <tr style={{height:"0px"}}>
-                    <td colSpan={6}>
+                    <td colSpan={6} style={{margin: 0, padding: 0}}>
                         <div className="accordian"> 
                           <div className="col-12">
                               <div className="row">
@@ -354,7 +354,7 @@ class Accounting extends React.Component<{},Props> {
                                       <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Invoice Details</p>
                                   </div>
                                   <div className="col-6">
-                                    <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
+                                    <span className="detail-created" onClick={()=>this.cancel(id)} >x</span>
                                 </div>
                               </div>
                           </div>
@@ -675,122 +675,128 @@ class Accounting extends React.Component<{},Props> {
             <Modal style={this.invoiceStyles} isOpen={this.state.invoiceModalIsOpen} onRequestClose={this.closeModal}>{this.renderInvoiceModal()}</Modal>
             <Modal style={this.invoiceStyles} isOpen={this.state.allInvoiceModalIsOpen} onRequestClose={this.closeModal}>{this.renderAllInvoiceModal()}</Modal>
             <Toast ref={this.mytoast} />
-                <div className="upper">
-                    <div className="row" >
-                        <div className="col-4 d-flex align-items-center" >
-                            <p className="m-2"><span className='heading'>{this.state.last_name}</span> 
-                            <br></br><span className='heading'>{this.state.cus_no}</span></p>
-                        </div>
-                        <div className="col-8">
-                            <div className="row "  style={{marginLeft:"-45px"}}>
-                              <div className="col-md-12 flex-container">
-                                  <div className="flex-item ">
-                                    <div className="flex-item-inner">
-                                              <div className="card-front p-2 m-2 bg-violet">
-                                                  <h6>Account Balance</h6>
-                                                  <p className="detail">${parseFloat(this.state.total_amount).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
-                                              </div>
-                                            
-                                      </div>
-                                  </div>
-                                  <div className="flex-item ">
-                                    <div className="flex-item-inner">
-                                              <div className="card-front p-2 m-2 bg-magenta">
-                                                  <h6>30 Days</h6>
-                                                  <p className="detail">${parseFloat(this.state.over_30).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
-                                              </div>
-                                            
-                                      </div>
-                                  </div>
-                                  <div className="flex-item ">
-                                    <div className="flex-item-inner">
-                                              <div className="card-front p-2 m-2 bg-blue">
-                                                  <h6>60 Days</h6>
-                                                  <p className="detail">${parseFloat(this.state.over_60).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
-                                              </div>
-                                            
-                                      </div>
-                                  </div>
-                                  <div className="flex-item ">
-                                    <div className="flex-item-inner">
-                                              <div className="card-front p-2 m-2 bg-green">
-                                                  <h6>90 Days</h6>
-                                                  <p className="detail">${parseFloat(this.state.over_90).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
-                                              </div>
-                                      </div>
-                                  </div>
-                                  
-       
-                                  <button className="btn btn-info" onClick={this.invoiceModalPayAll}>
-                                      Pay All
-                                  </button>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                  
-                </div>
-                <div className="row">
-                    
-                    <div>
-                            <p className="card-title">Terms</p>
-                            <p>{this.state.terms}</p>
-                    </div>
-                  </div>
-                <div className="content">
-                <div className="accordian"> 
-                    <div className="col-12">
-                        <div className="row">
-                            <div className="col-6">
-                                <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Invoices</p>
-                            </div>
-                            <div className='col-6'>
-                                <a href="javascript:void(0)" onClick={() => this.handleDownload(`${baseURL}/api/customer/pdf/all/invoice/${this.state.cus_no}/`,"AllInvoices.pdf")}><img data-toggle="tooltip" data-placement="top" title="all invoices" alt="pdf1" style={{cursor:"pointer",backgroundColor:'white',float:"right",width:'2rem',marginTop:'.25rem'}} src={image}/></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="p-datatable p-component" data-scrollselectors=".p-datatable-scrollable-body, .p-datatable-unfrozen-view .p-datatable-scrollable-body">
-                <div className="p-datatable-wrapper">
-                  <table role="grid">
-                    <thead className="p-datatable-thead" >
-                        <tr >
-                        <th style={{fontWeight:500}} scope="col" colSpan={2} >Location Name</th>
-                        <th style={{fontWeight:500}} scope="col" colSpan={2}>Address</th>
-                        <th style={{fontWeight:500}} scope="col">Open Invoice</th>
-                        <th style={{fontWeight:500,textAlign:"right"}} scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="p-datatable-tbody">
-                       {this.state.tableData.map((item: any,i: any)=>{
-                         return(
-                             <>
-                        <tr key={i} >
-                        <td colSpan={2}>{item.location}</td>
-                        <td colSpan={2}>{item.address}</td>
-                         <td>$ {parseFloat(item.amount).toLocaleString()}</td>
-                        <td style={{textAlign:"right"}}>
-                           <img data-toggle="tooltip" data-placement="top" title="view invoices" alt="eye" className=" ml-1 icon"  onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.details(item.loc_no,i)} src={viewa} />
-                           <img data-toggle="tooltip" data-placement="top" title="pay invoices" alt="dollar" className=" ml-1 icon"  src={dollar} onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.invoiceModal(item.loc_no,item.location,item.address)}/>
-                           <img data-toggle="tooltip" data-placement="top" title="Help" alt="question" className=" ml-1 icon"  onClick={()=>this.invoiceQuery(item.location ,item.address,item.amount,item.loc_no)} src={question}/>
-                           <img data-toggle="tooltip" data-placement="top" title="Invoices details" className=" ml-1 icon" alt="pdf1" onClick={() => this.exportPDFsingleinvoices(item.location ,item.address,item.loc_no)} src={image}/>
-                        </td>
-                        </tr>                                                                                                                                 
-                        {this.renderEditForm(item.showDetails,i)}
-                        </>
-                         )})}
-                            
-                    </tbody>
-                </table>
-                </div>
-                </div>
+            <div className="row">
+              <div className="col-lg-12">
+                <h6 className="over-text">Overview</h6>
+              </div>
+            </div>
+            <div className="row">
+						<div className="col-lg-4 pb-3">
+							<div className="customer-number">
+								<p className="mb-0">{this.state.last_name}</p>
+								<p className="mb-0">Customer Number: {this.state.cus_no}</p>
+								<p className="mb-0 term-color">Terms</p>
+								<p className="mb-0 term-color">NET 30</p>
+							</div>
+						</div>
+						<div className="col-lg-8">
+							<div className="row">
+								<div className="col-md-3 pb-3">
+									<div className="account-blnc">
+										<div className="acount-blnc-inner">
+											<p className="mb-0 acount-text text-center">Account Balance</p>
+											<p className="mb-0 acount-price text-center">${parseFloat(this.state.total_amount).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
+										</div>
 
+									</div>
+								</div>
+								<div className="col-md-3 pb-3">
+									<div className="account-blnc">
+										<div className="acount-blnc-inner">
+											<p className="mb-0 acount-text text-center">30 Days</p>
+											<p className="mb-0 acount-price text-center">${parseFloat(this.state.over_30).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
+										</div>
+
+									</div>
+								</div>
+								<div className="col-md-3 pb-3">
+									<div className="account-blnc">
+										<div className="acount-blnc-inner">
+											<p className="mb-0 acount-text text-center">60 Days</p>
+											<p className="mb-0 acount-price text-center">${parseFloat(this.state.over_60).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
+										</div>
+
+									</div>
+								</div>
+								<div className="col-md-3 pb-3">
+									<div className="account-blnc">
+										<div className="acount-blnc-inner">
+											<p className="mb-0 acount-text text-center">90 Days</p>
+											<p className="mb-0 acount-price text-center">${parseFloat(this.state.over_90).toLocaleString(navigator.language, {maximumFractionDigits:2})}</p>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+{/* 					 */}
+					<div className="row">
+						<div className="col-lg-12">
+							<div className="overview-pannel-cal">
+								<div className="overview-pannel-header">
+									Invoice
+								</div>
+                <div className="overview-pannel-body table-responsive-sm">
+									<div className="table-responsive">
+										<table className="table mb-0">
+											<thead className="thead-light">
+                        <tr >
+                          <th  scope="col" colSpan={2} >Location Name</th>
+                          <th  scope="col" colSpan={2}>Address</th>
+                          <th  scope="col">Open Invoice</th>
+                          <th style={{textAlign:"right"}} scope="col">Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody className="p-datatable-tbody">
+                        <tr>
+													<th scope="col">
+														{/* <label className="container">
+															<input type="checkbox"/>
+															<span className="checkmark"></span>
+														</label> */}
+													</th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col" className="text-right general-btn">
+														<button className="btn red-btn mb-1" onClick={this.invoiceModalPayAll}>Pay All</button>
+														<button className="btn blue-btn mb-1" onClick={() => this.handleDownload(`${baseURL}/api/customer/pdf/all/invoice/${this.state.cus_no}/`,"AllInvoices.pdf")}>Print all</button>
+													</th>
+												</tr>
+
+                        {this.state.tableData.map((item: any,i: any)=>{
+                          return(
+                              <>
+                          <tr key={i} >
+                          <td colSpan={2} className="primary-text" onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.details(item.loc_no,i)}>{item.location}</td>
+                          <td colSpan={2}  >{item.address}</td>
+                          <td>$ {parseFloat(item.amount).toLocaleString()}</td>
+                          <td style={{textAlign:"right"}} className="text-right general-btn">
+                            {/* <img data-toggle="tooltip" width="20px" data-placement="top" title="Help" alt="question" className=" ml-1 icon"  onClick={()=>this.invoiceQuery(item.location ,item.address,item.amount,item.loc_no)} src={question}/> */}
+														<button className="btn red-btn mb-1" onClick={(item.amount===0 || item.amount==='0.00')? this.noInvoice  : ()=>this.invoiceModal(item.loc_no,item.location,item.address)}>Pay</button>
+														<button className="btn blue-btn mb-1" onClick={() => this.exportPDFsingleinvoices(item.location ,item.address,item.loc_no)}>Print </button>
+
+                          </td>
+                          </tr>                                                                                                                                 
+                          {this.renderEditForm(item.showDetails,i)}
+                          </>
+                          )})}
+                              
+                      </tbody>
+                  </table>
+                  </div>
+								</div>
+              </div>
+               
                 <Paginator 
                   template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
                   first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
                             onPageChange={this.onPageChange}
                   ></Paginator>
                 </div>
+              </div>
             </div>
             </>
         );

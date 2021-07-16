@@ -91,9 +91,8 @@ class Quotations extends React.Component<{},Props> {
           ];
 
           handleChange = (e:any) => {
-            //debugger
-            this.setState({isSelected: e.value});
-            this.fetchedData(e.value);
+            this.setState({isSelected: e.target.value});
+            this.fetchedData(e.target.value);
           }
 
         fetchedData= async(value:any)=>{
@@ -171,7 +170,7 @@ class Quotations extends React.Component<{},Props> {
               return(
                 <>
                 <tr style={{height:"0px"}}>
-                    <td colSpan={5}>
+                    <td colSpan={5} className="m-0 p-0">
                         <div className="accordian"> 
                           <div className="col-12">
                               <div className="row">
@@ -179,7 +178,7 @@ class Quotations extends React.Component<{},Props> {
                                       <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Estimation Details</p>
                                   </div>
                                   <div className="col-6">
-                                    <span className="detail-created" onClick={()=>this.cancel(id)} >Close</span>
+                                    <span className="detail-created" onClick={()=>this.cancel(id)} >X</span>
                                 </div>
                               </div>
                           </div>
@@ -217,70 +216,81 @@ class Quotations extends React.Component<{},Props> {
               <FadeLoader css={override} color={"rgb(0, 158, 214)"} loading={this.state.loading}  height={30} width={5} radius={2} margin={20} />
           </div> : ''
             }
-                <div className="upper">
-                    <div className="row">
-                        <div className="col-6">
-                            <p style={{padding:"1.25rem"}}><span className='heading'>{this.state.last_name}</span> 
-                            <br></br><span className='heading'>{this.state.cus_no}</span></p>
-                        </div>
-                        <div style={{marginLeft:"12.5rem",marginTop:"1.25rem"}} className="col-3">
-                            <label  htmlFor="inputState">Filter By:</label>
-                            <Select
-                                values={this.options.filter(obj => obj.value === this.state.isSelected)}
-                                onChange={this.handleChange}
-                                className="dropdown"
-                                options={this.options}
-                                placeholder="Open Quotes"
-                                styles={this.colourStyles}
-                                isSearchable
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="content" >
-                <div className="accordian"> 
-                    <div className="col-12">
+              <section className="overview">
+                    <div className="container-fluid">
                         <div className="row">
-                            <div className="col-6">
-                                <p style={{color:"#fff",textAlign:"left",marginTop:"0.625rem"}}>Estimations</p>
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Estimates</h6>
                             </div>
                         </div>
                     </div>
-                </div>
-                <table  className="table table-striped">
-                    <thead>
-                        <tr >
-                        <th style={{fontWeight:500}} scope="col">Location Name</th>
-                        <th style={{fontWeight:500}} scope="col">Address</th>
-                        <th style={{fontWeight:500,textAlign:"center"}} scope="col">{this.options.filter(obj => obj.value === this.state.isSelected)[0].label} Quotes</th>
-                        <th style={{fontWeight:500,textAlign:"right"}} scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.tableData.map((item: any,i: any)=>{
-                         return(
-                             <>
-                        <tr key={i}>
-                        <td>{item.location}</td>
-                        <td>{item.address}</td>
-                        <td style={{textAlign:"center"}} >{item.quotes}</td>
-                        <td style={{textAlign:"right"}}>
-                          <img data-toggle="tooltip" data-placement="top" title="View Quotes" alt="eye" style={{cursor:"pointer",width:'1.8rem'}} src={viewq} onClick={()=>this.details(item.loc_no,i)}/>
-                        </td>
-                        </tr>
-                        {this.renderEditForm(item.showDetails,i)}
-                        </>
-                         )})}
-                         <tr>
-                            <td colSpan={4}>
-                            <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
+                </section>
+                <section className="filter-pannel">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="filter-pannel-inner d-flex justify-content-between flex-wrap">
+                                    <div>
+                                        <h6>{this.state.last_name}</h6>
+                                        <h6>{this.state.cus_no}</h6>
+                                    </div>
+                                    <div className="form-group mb-2 w-40">
+                                        <label>Filter By:</label>
+                                        <select 
+                                          className="form-control filter-form-control"
+                                          onChange={this.handleChange} id="exampleFormControlSelect1">
+                                            {this.options.map(option=>(
+                                              <option value={option.value} selected={this.state.isSelected == option.value}>{option.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+                <div className="container-fluid">
+            <div className="row">
+                <div className="col-lg-12">
+                    <div className="overview-pannel-cal">
+                        <div className="overview-pannel-header">
+                            Estimations
+                        </div>
+                        <div className="overview-pannel-body table-responsive-sm">
+                        <table  className="table mb-0 estimates-table">
+                          <thead className="thead-light">
+                              <tr >
+                              <th scope="col">Location Name</th>
+                              <th className="text-center" scope="col">Address</th>
+                              <th style={{textAlign:"right"}} scope="col">{this.options.filter(obj => obj.value === this.state.isSelected)[0].label} Quotes</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {this.state.tableData.map((item: any,i: any)=>{
+                            return(
+                                <>
+                            <tr key={i}>
+                            <td className="primary-text" onClick={()=>this.details(item.loc_no,i)}>{item.location}</td>
+                            <td className="text-center">{item.address}</td>
+                            <td style={{textAlign:"right"}} className="pr-5" >{item.quotes}</td>
+                            </tr>
+                             {this.renderEditForm(item.showDetails,i)}
+                            </>
+                            )})}
+                          </tbody>
+                       </table>
+                
+                        </div>
+                        <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
                             template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
                             onPageChange={this.onPageChange}></Paginator>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            
+                    </div>
                 </div>
+            </div>
+        </div>
+     
             </div>
             </>
         );

@@ -10,6 +10,7 @@ import './Payement/Payment.css';
 import cancel from '../icons/cancel.svg';
 import image from '../icons/pdf-1.svg';
 import * as _html2canvas from "html2canvas";
+import { Link } from 'react-router-dom';
 
 const override = css`
   margin: 0 auto;
@@ -250,18 +251,18 @@ class AccountingDetails extends React.Component<{locationNo:any,cus_no:any,load:
         </div>:''
           }
          
-          <div>
+          <div >
           <Modal style={this.customStyles} isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>{this.renderModal()}</Modal>
-          <table className="table table-striped" style={{border :'2px solid #12739A'}}>
-            <thead>
+          <table className="table table-striped" style={{margin: 0}}>
+            <thead className="thead-light">
               <tr>
-                <th style={{fontWeight:500}} scope="col">Invoice Number</th>
-                <th style={{fontWeight:500}} scope="col">Invoice Date</th>
-                <th style={{fontWeight:500}} scope="col">Do Date</th>
-                <th style={{fontWeight:500}} scope="col">Invoice Amount</th>
-                <th style={{fontWeight:500}} scope="col">Paid Amount</th>
-                <th style={{fontWeight:500}} scope="col">Balance</th>
-                <th style={{fontWeight:500,textAlign:"right"}} scope="col">Action</th>
+                <th  scope="col">Invoice Number</th>
+                <th  scope="col">Invoice Date</th>
+                <th  scope="col">Do Date</th>
+                <th  scope="col">Invoice Amount</th>
+                <th  scope="col">Paid Amount</th>
+                <th  scope="col">Balance</th>
+                <th style={{textAlign:"right"}} scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -276,10 +277,14 @@ class AccountingDetails extends React.Component<{locationNo:any,cus_no:any,load:
                 <td>$ {parseFloat(item.sub_total).toLocaleString()}</td>
                 <td>$ {parseFloat(item.tax).toLocaleString()}</td>
                 <td>$ {parseFloat(item.total).toLocaleString()}</td>
-                <td style={{textAlign:"right"}}>
-                    <img data-toggle="tooltip" data-placement="top" title="view invoice" alt="eye" className="ml-1 icon" onClick={()=>this.invoice(item.invoice)} src={viewa}/>
-                    {<a data-toggle="tooltip" data-placement="top" title="invoice" href={`${baseURL}/api/customer/pdf/invoice/${this.props.cus_no}/${this.props.locationNo}/${item.invoice}/`} ><img alt="pdf1" className="ml-1 icon" src={image}/></a>}
+                <td scope="col" className="text-right general-btn">
+                  <button className="btn red-btn mb-1" onClick={()=>this.invoice(item.invoice)}>Pay</button>
+                  { 
+                    <button onClick={() => window.open(`${baseURL}/api/customer/pdf/invoice/${this.props.cus_no}/${this.props.locationNo}/${item.invoice}/`, '_blank')} data-toggle="tooltip" data-placement="top" className="btn blue-btn mb-1" title="invoice" >Print</button>
+                  }
+                  
                 </td>
+          
               </tr>
               )})}
             </tbody>

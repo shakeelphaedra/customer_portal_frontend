@@ -81,7 +81,7 @@ class ViewKeysGroupDetails extends React.Component<{viewdata:any,load:any,loadc:
         </div> :''
           }
             <div>
-          <table className="table" style={{border :'2px solid #12739A'}} >
+          <table className="table m-0"  >
             <thead >
               <tr>
                 <th style={{fontWeight:500,margin:0,width:"6.65rem"}} scope="col">Key ID Stamp</th>

@@ -195,50 +195,76 @@ let CompanyDetails=()=> {
                 </div> : ''}
                 <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>{renderModal()}</Modal>
                 <Toast ref={myToast} /> 
-                <div className="upper">
-                    <p style={{padding:"20px"}}><span className='heading'>{last_name}</span> 
-                    <br></br><span className='heading'>{cus_no}</span></p>
-                </div>
-                <div className="content">
-                <div className="accordian"> 
-                    <div className="col-12">
+                <section className="overview">
+                    <div className="container-fluid">
                         <div className="row">
-                            <div className="col-6">
-                                <p style={{color:"#fff",textAlign:"left",marginTop:"10px"}}>Company Locations</p>
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Company Locations</h6>
                             </div>
                         </div>
                     </div>
-                </div >
-                <table className="table table-striped">
-                    <thead>
-                        <tr >
-                        <th style={{fontWeight:500}} scope="col">Location Name</th>
-                        <th style={{fontWeight:500}} scope="col">Address</th>
-                        <th style={{fontWeight:500}} scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       {tableData.map((item: any,i: any)=>{
-                         return(
-                        <tr>
-                         <td>{item.location}</td>
-                         <td>{item.address}</td>
-                         <td >
-                           <img data-toggle="tooltip" data-placement="top" title="edit" alt="edit" style={{width:'0.8rem', cursor: 'pointer'}} onClick={(localStorage.getItem('service_request')=== 'true')? ()=>location(item.location_no) : noPermission} src={edit}/>
-                         </td>
-                        </tr>
-                         )})}
-                         <tr>
-                 <td colSpan={2}>
-                  <Paginator first={formData.offset} rows={formData.perPage} totalRecords={formData.totalRecords} rowsPerPageOptions={[10,20,30]} 
-                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
-                  onPageChange={onPageChange}></Paginator>
-                  </td>
-                  </tr>
-                    </tbody>
-                    
-                </table>
-                
+                </section>
+                <section className="filter-pannel">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="filter-pannel-inner d-flex justify-content-between flex-wrap">
+                                    <div>
+                                        <h6>{last_name}</h6>
+                                        <h6>{cus_no}</h6>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+    
+                <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Locations
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 estimates-table">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      
+                                      <th scope="col">Location Name</th>
+                                        <th scope="col" className="text-center">Address</th>
+                                        <th scope="col" className="text-right pr-4">Actions</th>
+                                        </tr>
+                                  </thead>
+                                  <tbody>
+                                    {tableData.map((item: any,i: any)=>{
+                                    return(
+                                        <>
+                                    <tr key={i}>
+                                    <td>{item.location}</td>
+                                    <td className="text-center">{item.address}</td>
+                                    <td className="text-right general-btn"  >
+                                        <button className="btn blue-btn"  
+                                        onClick={(localStorage.getItem('service_request')=== 'true')? ()=>location(item.location_no) : noPermission}
+                                        >Update</button>
+                                    </td>
+                                    </tr>
+                                    
+                                    </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={formData.offset} rows={formData.perPage} totalRecords={formData.totalRecords} rowsPerPageOptions={[10,20,30]} 
+                                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
+                                  onPageChange={onPageChange}></Paginator>
+                                    
+                          </div>
+                      </div>
+                  </div>
                 </div>
             </div>
         </>
