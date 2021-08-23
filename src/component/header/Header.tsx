@@ -20,38 +20,12 @@ import axiosInstance from '../../api/api';
 function Header(props:any) {
     const [acces, setAccess] = useState("");
     const [username, setUsername] = useState<any>("");
-
     React.useEffect(() => {
-        let token:any = localStorage.getItem('refresh_token'); 
-          let user:any = localStorage.getItem('username'); 
-          debugger
-          setAccess(token);
-          setUsername(user);
-        window.addEventListener("storage",(e) => {
-            debugger
-        });   
-        window.addEventListener('storage', () => {
-          let token:any = localStorage.getItem('refresh_token'); 
-          let user:any = localStorage.getItem('username'); 
-          debugger
-          setAccess(token);
-          setUsername(user);
-        });
-    }, [])
-    const history = useHistory();
-    const logout =()=> {
-        try {
-            setAccess("");
-            setUsername("");
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('username');
-            axiosInstance.defaults.headers['Authorization'] = null;
-            history.push('/');
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
+        setUsername(props.username)
+        setAccess(props.access)
+      }, []);
+    
+ const history = useHistory();
     
     const icon = () =>{
         history.push('/home/companydetails');
@@ -73,7 +47,7 @@ function Header(props:any) {
                             <span className="userImg"></span>
                         </a>
                         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a className="dropdown-item" href="#" onClick={logout}>LOGOUT</a>
+                            <a className="dropdown-item" href="#" onClick={props.logout}>LOGOUT</a>
                         </div>
                     </li>
                 </ul> : ''

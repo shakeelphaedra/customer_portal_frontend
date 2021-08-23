@@ -293,40 +293,73 @@ class AuditKeys extends React.Component<{},Props> {
           </div> :''
             }
             <Toast ref={this.toast} />
-             <div className="upper1 p-0" style={{height:"12.5rem"}} >
-                <table id="MyTable" className="table" style={{backgroundColor:"#fff"}}>
-                    <thead style={{ color: "#fff",backgroundColor:"#12739A"}}>
-                    <tr>
-                        <th>Run Audit</th>
-                        <th>Keys Confirmed</th>
-                        <th>Waiting for Confirmation</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody className="table-bordered">
-                        <tr style={{cursor: 'pointer'}} >
-                            <td onClick={ this.openGroups}>Audit Key Groups</td>
-                            <td onClick={ this.openGroups}>{this.state.groupsDetails.confirmed}</td>
-                            <td onClick={ this.openGroups}>{this.state.groupsDetails.waiting}</td>
-                            <td><a href="javascript:void(0)" onClick={ () => this.completeAudit('group')}>Complete Audit</a></td>
-                        </tr>
-                        <tr style={{cursor: 'pointer'}} >
-                            <td onClick={ this.openKeys}>Audit Selection of Keys</td>
-                            <td onClick={ this.openKeys}>{this.state.keysDetails.confirmed}</td>
-                            <td onClick={ this.openKeys}>{this.state.keysDetails.waiting}</td>
-                            <td ><a href="javascript:void(0)" onClick={ () => this.completeAudit('key')} >Complete Audit</a></td>
-                        </tr>
-                    </tbody> 
-                </table>
-            </div>
-            {
+            <section className="overview">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <h6 className="over-text">Company Locations</h6>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+               
+    
+                <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Locations
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 estimates-table">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      <th>Run Audit</th>
+                                      <th className="text-center">Keys Confirmed</th>
+                                      <th className="text-center">Waiting for Confirmation</th>
+                                      <th className="text-right">Action</th>  
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr style={{cursor: 'pointer'}} >
+                                      <td className="primary-text" onClick={ this.openGroups}>Audit Key Groups</td>
+                                      <td className="text-center" onClick={ this.openGroups}>{this.state.groupsDetails.confirmed}</td>
+                                      <td className="text-center" onClick={ this.openGroups}>{this.state.groupsDetails.waiting}</td>
+                                      <td className="text-right general-btn">
+                                      <button className="btn blue-btn"  
+                                        onClick={ () => this.completeAudit('group')}
+                                        >Complete</button>
+                                      </td>
+                                  </tr>
+                                  <tr style={{cursor: 'pointer'}} >
+                                      <td className="primary-text" onClick={ this.openKeys}>Audit Selection of Keys</td>
+                                      <td className="text-center" onClick={ this.openKeys}>{this.state.keysDetails.confirmed}</td>
+                                      <td  className="text-center" onClick={ this.openKeys}>{this.state.keysDetails.waiting}</td>
+                                      <td  className="text-right general-btn">
+                                        <button className="btn blue-btn"  
+                                        onClick={ () => this.completeAudit('key')} 
+                                        >Complete</button>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              {
                 this.state.auditType  === 'group' ?
             
-                     <div className="content"  >
+                     <div className="mt-2 overview-pannel-body table-responsive-sm"  >
             <table className="table" style={{backgroundColor:"#fff"}}>
               <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
                 <tr>
-                    <th><input type="checkbox" value={"all"} onChange={this.addInSelectedGroupsList} /> Select</th>
+                    <th>
+                    <label className="container mb-4">
+                      <input type="checkbox" onChange={this.addInSelectedGroupsList} value={"all"} />
+                      <span className="checkmark"></span>
+
+                    </label>
+                      </th>
                   <th data-visible="true" >Group Name</th>
                 </tr>
               </thead>
@@ -335,7 +368,14 @@ class AuditKeys extends React.Component<{},Props> {
               return(
                 <>
                 <tr key={i}>
-                  <td><input type="checkbox" value={item.id} onChange={this.addInSelectedGroupsList} checked={this.state.selectedGroups.includes(item.id)}/></td>
+                  <td>
+                    
+                    <label className="container mb-4">
+                      <input type="checkbox"  value={item.id} onChange={this.addInSelectedGroupsList} checked={this.state.selectedGroups.includes(item.id)} />
+                      <span className="checkmark"></span>
+
+                    </label>
+                  </td>
                   <td>{item.name}</td>
                 </tr>
                 </>
@@ -351,12 +391,20 @@ class AuditKeys extends React.Component<{},Props> {
             {
                 this.state.auditType  === 'selectKeys' ?
             
-                     <div className="content"  >
+                     <div className="mt-2 overview-pannel-body table-responsive-sm"  >
                         <table className="table" style={{backgroundColor:"#fff"}}>
                             <thead style={{ color: "#fff",backgroundColor:"#12739A" }}>
                             <tr>
-                               <th><input type="checkbox" value={"all"} onChange={this.addInSelectedKeysList} /> Select</th>
+                               <th>
+                                 
+                                <label className="container mb-4">
+                                  <input type="checkbox"  
+                                  value={"all"} onChange={this.addInSelectedKeysList}
+                                   />
+                                  <span className="checkmark"></span>
 
+                                </label>
+                                </th>
                                 <th data-visible="true" >Key ID Stamp</th>
                                 <th>Email</th>
                                 <th>Phone</th>
@@ -367,7 +415,16 @@ class AuditKeys extends React.Component<{},Props> {
                             return(
                             <>
                             <tr key={i}>
-                               <td><input type="checkbox" value={item.id} onChange={this.addInSelectedKeysList} checked={this.state.selectedKeys.includes(item.id)}/></td>
+                               <td>
+                                 
+                                <label className="container mb-4">
+                                  <input type="checkbox"  
+                                  value={item.id} onChange={this.addInSelectedKeysList} checked={this.state.selectedKeys.includes(item.id)}
+                                   />
+                                  <span className="checkmark"></span>
+
+                                </label>
+                                </td>
                                 <td>{item.key_id +" - "+ item.sequence}</td>
                                 <td>{item.email}</td>
                                 <td>{item.phone}</td>
@@ -384,6 +441,12 @@ class AuditKeys extends React.Component<{},Props> {
                 :  
                     ''
             }
+                            </div>
+                      </div>
+                  </div>
+                </div>
+        
+           
            </div>
             </div>
           </>

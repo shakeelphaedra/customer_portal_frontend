@@ -73,7 +73,7 @@ let CreateAccount=()=>{
             isValid = false ;
         }else if(!(formData.password.trim().length >= 8 && formData.password.match(numbers) && formData.password.match(lowerCaseLetters) && formData.password.match(upperCaseLetters) && formData.password.match(specialcharacter))){
             if(node){
-                node.show({severity: 'error',  detail: "Please enter a valid password format"});
+                node.show({severity: 'error',  detail: "Password should be minimum 8 characters with atleast one uppercase, one lowercase, one special character and one numeric value"});
                 }
             isValid = false;
         }

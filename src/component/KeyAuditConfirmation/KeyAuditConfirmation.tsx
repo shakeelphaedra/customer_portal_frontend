@@ -78,6 +78,7 @@ class KeyAuditConfirmation extends React.Component<{},Props> {
     }
 
     render(){
+        console.log("key_audit_info");
         return(
             <div>
             {

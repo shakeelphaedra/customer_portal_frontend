@@ -37,39 +37,39 @@ let Sidebarr =()=> {
             <a href="#" className="action-btn">
               <i className="fa fa-angle-right" aria-hidden="true"></i></a>
             <ul>
-              <li>
+              <li className={"" + ((window.location.pathname==="/home/accounting")? "active" : "")}>
                 { (localStorage.getItem('invoice')=== 'false' || localStorage.getItem('quotes')=== 'false')   ? <a href="#" ><img className='sideicons' alt="sidebar" src={accounting}/>
                       Pay Bills</a> : <NavLink  to="/home/accounting" ><img className='mr-3' alt="sidebar" src={accounting}/>
                       Pay Bills</NavLink>}
               </li>
-              <li>
+              <li className={"" + ((window.location.pathname==="/home/estimations")? "active" : "")}>
               { (localStorage.getItem('invoice')=== 'false' || localStorage.getItem('quotes')=== 'false')   ? <a href="#" ><img className='sideicons' alt="sidebar" src={estimates}/>
                       Estimations</a> : <NavLink  to="/home/estimations" ><img className='mr-3' alt="sidebar" src={estimates}/>
                       Estimations</NavLink>}
               </li>
-              <li>
+              <li className={"" + ((window.location.pathname==="/home/servicerequest")? "active" : "")}>
                 <NavLink  to="/home/servicerequest"><img className='mr-3' alt="sidebar" src={service}/>
                       Request Service</NavLink>
               </li>
-              <li>
+              <li onClick={checkActive} className={"inner " + ((["/home/viewkeys","/home/viewkeysgroup","/home/auditkeys"].includes(window.location.pathname)||active===true) ? "active" : "")}>
                 { localStorage.getItem('key_finder')=== 'true'?
                   <>
-                    <a className="has-content" href="#" onClick={checkActive}><img className="mr-3" src={keys}/>
+                    <a className="has-content" href="#" ><img className="mr-3" src={keys}/>
                       Manage Keys
                     </a>
  
-                    <ul className={"inner " + active ? "active" : ""}>
-                      <li>
+                    <ul >
+                      <li className={"" + ((window.location.pathname==="/home/viewkeys")? "active" : "")}>
                         <NavLink  to="/home/viewkeys"><img className='mr-3' alt="sidebar" src={keys}/>
                           Manage Keys
                         </NavLink>
                       </li>
-                      <li>
+                      <li className={"" + ((window.location.pathname==="/home/viewkeysgroup")? "active" : "")}>
                         <NavLink to="/home/viewkeysgroup"><img className='mr-3' alt="sidebar" src={keys}/>
                           Manage Keys Group
                         </NavLink>
                       </li>
-                      <li>
+                      <li className={"" + ((window.location.pathname==="/home/auditkeys")? "active" : "")}>
                         <NavLink  to="/home/auditkeys">
                           Audit Keys<span className="text-danger text-bold ml-2">NEW</span>
                         </NavLink>
@@ -99,21 +99,21 @@ let Sidebarr =()=> {
                   </>
                   }
              </li>
-              <li>
+              <li className={"" + ((window.location.pathname==="/home/auditreport")? "active" : "")}>
               { localStorage.getItem('audit')=== 'true'? <NavLink  to="/home/auditreport"><img className='mr-3' alt="sidebar" src={audit}/>
                     Audit Trail</NavLink> : <a href="#" style={{cursor:'not-allowed'}}><img className='sideicons' alt="sidebar" src={audit}/>
                     Audit Trail</a>}
               </li>
-              <li> 
+              <li className={"" + ((window.location.pathname==="/home/companydetails")? "active" : "")}> 
                  <NavLink   to="/home/companydetails" ><img className='mr-3' alt="sidebar" src={company}/>                
                     Company Locations</NavLink>
               </li>
              
-           <li>
+           <li className={"" + ((window.location.pathname==="/home/manageuser")? "active" : "")}>
               <NavLink  to="/home/manageuser"><img className='mr-3' alt="sidebar" src={manageUser}/>
                     Manage Users</NavLink>
               </li>
-           <li>
+           <li className={"" + ((window.location.pathname==="/home/systemnumber")? "active" : "")}>
               { (localStorage.getItem('user_type')=== 'primary') ? <NavLink  to="/home/systemnumber"><img className='mr-3' alt="sidebar" src={manager}/>
                     System Number</NavLink> : ''}
             </li>

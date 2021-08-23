@@ -251,48 +251,47 @@ class Quotations extends React.Component<{},Props> {
 
                 </section>
                 <div className="container-fluid">
-            <div className="row">
-                <div className="col-lg-12">
-                    <div className="overview-pannel-cal">
-                        <div className="overview-pannel-header">
-                            Estimations
-                        </div>
-                        <div className="overview-pannel-body table-responsive-sm">
-                        <table  className="table mb-0 estimates-table">
-                          <thead className="thead-light">
-                              <tr >
-                              <th scope="col">Location Name</th>
-                              <th className="text-center" scope="col">Address</th>
-                              <th style={{textAlign:"right"}} scope="col">{this.options.filter(obj => obj.value === this.state.isSelected)[0].label} Quotes</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                            {this.state.tableData.map((item: any,i: any)=>{
-                            return(
-                                <>
-                            <tr key={i}>
-                            <td className="primary-text" onClick={()=>this.details(item.loc_no,i)}>{item.location}</td>
-                            <td className="text-center">{item.address}</td>
-                            <td style={{textAlign:"right"}} className="pr-5" >{item.quotes}</td>
-                            </tr>
-                             {this.renderEditForm(item.showDetails,i)}
-                            </>
-                            )})}
-                          </tbody>
-                       </table>
-                
-                        </div>
-                        <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
-                            template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
-                            onPageChange={this.onPageChange}></Paginator>
-                            
-                    </div>
+                  <div className="row">
+                      <div className="col-lg-12">
+                          <div className="overview-pannel-cal">
+                              <div className="overview-pannel-header">
+                                  Estimations
+                              </div>
+                              <div className="overview-pannel-body table-responsive-sm">
+                                <table  className="table mb-0 estimates-table">
+                                  <thead className="thead-light">
+                                      <tr >
+                                      <th scope="col">Location Name</th>
+                                      <th className="text-center" scope="col">Address</th>
+                                      <th style={{textAlign:"right"}} scope="col">{this.options.filter(obj => obj.value === this.state.isSelected)[0].label} Quotes</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                    {this.state.tableData.map((item: any,i: any)=>{
+                                    return(
+                                        <>
+                                    <tr key={i}>
+                                    <td className="primary-text" onClick={()=>this.details(item.loc_no,i)}>{item.location}</td>
+                                    <td className="text-center">{item.address}</td>
+                                    <td style={{textAlign:"right"}} className="pr-5" >{item.quotes}</td>
+                                    </tr>
+                                    {this.renderEditForm(item.showDetails,i)}
+                                    </>
+                                    )})}
+                                  </tbody>
+                              </table>
+                        
+                              </div>
+                              <Paginator first={this.state.offset} rows={this.state.perPage} totalRecords={this.state.totalRecords} rowsPerPageOptions={[10,20,30]} 
+                                  template="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink "
+                                  onPageChange={this.onPageChange}></Paginator>
+                                  
+                          </div>
+                      </div>
+                  </div>
                 </div>
             </div>
-        </div>
-     
-            </div>
-            </>
+          </>
         );
     }
 }

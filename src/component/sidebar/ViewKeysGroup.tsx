@@ -158,7 +158,6 @@ class ViewKeysGroup extends React.Component<{},Props> {
   }
   
   cancel(id:any) {
-    debugger
     const updatedData = this.state.data.map((obj:any,i:number)=>{
         if(i===id){
           obj.showDetails = false;

@@ -60,6 +60,11 @@ img{
 .sidebar-left ul>li>a:hover {
 	background-color: #094D6E;
 }
+
+.sidebar-left ul>a.active,
+.sidebar-left ul>a:hover {
+	background-color: #094D6E;
+}
 .action-btn {
 	position: absolute;
 	right: -40px;

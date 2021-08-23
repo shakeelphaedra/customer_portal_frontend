@@ -180,6 +180,7 @@ const handleCheckboxSlider = (e: { target: { name: any; checked:any;} },item:any
         if(!(data===null)){
           setLoading(false);
         }
+        console.log("response :",response?.data)
         setFile_numbers(response.data.results.file_numbers);
         setCurrentuser(response.data.results.current_user);
         setCurrent_user_access(response.data.results.current_user_access);

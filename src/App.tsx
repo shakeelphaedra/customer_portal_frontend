@@ -14,14 +14,20 @@ import Forget from './component/login/Forget';
 import ChangePassword from './component/login/ChangePassword';
 import ResetPassword from './component/login/ResetPassword';
 import NotFound from './component/NotFound';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import KeyAuditConfirmation from './component/KeyAuditConfirmation/KeyAuditConfirmation';
 import Header from './component/header/Header';
 
 require('dotenv').config()
 function App(props:any) {
   const history = useHistory();
+  const [acces, setAccess] = useState("");
+  const [username, setUsername] = useState<any>("");
   useEffect(()=>{
+    let token:any = localStorage.getItem('refresh_token'); 
+    let user:any = localStorage.getItem('username'); 
+    setAccess(token);
+    setUsername(user);
      console.log(window);
   },[])
 
@@ -31,10 +37,24 @@ function App(props:any) {
   const login = () =>{
     history.push('/');
   }
+  const logout =()=> {
+    try {
+        setAccess("");
+        setUsername("");
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('username');
+        history.push('/');
+    }
+    catch (e) {
+        console.log(e);
+    }
+};
+
+
 
   return (
     <div className="main-page">
-        <Header/>
+        <Header acces={acces} username={username} logout={logout}/>
               <Route exact path="/" component={Login} />
               <Route exact path="/KeyAudit/:id" component={KeyAuditConfirmation} />
               <Route path="/home" component={Home} />

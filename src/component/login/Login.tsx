@@ -111,7 +111,7 @@ let Login=()=> {
 
                     if(res.data.is_active)
                     {  
-
+                        console.log(res.data);
                         localStorage.setItem('email', res.data.email);
                         localStorage.setItem('phone', res.data.phone);
                         localStorage.setItem('access_token', res.data.access);
@@ -161,10 +161,10 @@ let Login=()=> {
 
     function reset() {
         history.push(`/forgot`);
-       }
+    }
     function login() {
         history.push(`/createaccount`);
-       }
+    }
       return (
           <>
         <div>

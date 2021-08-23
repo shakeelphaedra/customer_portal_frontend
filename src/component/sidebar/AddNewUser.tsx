@@ -41,7 +41,6 @@ let AddNewUser = (props:any) =>{
     const [file, setFile] = useState<any>([]);
     const [selected, setSelected] = useState<any>([]);
     const [loading, setLoading] = useState<any>(false);
-
     const options = file.map((item: any,i: any)=>{ 
             return (
             { label: item.file_number+((item.location===null)?'':" - "+item.location), value: item.id})
